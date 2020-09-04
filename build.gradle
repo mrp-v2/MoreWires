@@ -1,0 +1,100 @@
+buildscript {
+    repositories {
+        maven {
+            url = 'https://files.minecraftforge.net/maven'
+        }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+def capitalizedModId = modDisplayName.replace(' ', '')
+def modId = capitalizedModId.toLowerCase()
+def forgeVersion = "${forgeMajor}.${forgeMinor}.${forgePatch}"
+def homepage = "https://www.curseforge.com/minecraft/mc-mods/${modDisplayName.replace(' ', '-').toLowerCase()}"
+version = "${mcVersion}-${modMajorMod}.${modMajorAPI}.${modMinor}.${modPatch}"
+archivesBaseName = modId
+group = "${author}.${archivesBaseName}"
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' +
+        System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+minecraft {
+    mappings channel: mappingsChannel, version: mappingsVersion
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                ComputerComponents {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                ComputerComponents {
+                    source sourceSets.main
+                }
+            }
+        }
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', modId, '--all', '--output', file('src/generated/resources/')
+            mods {
+                ComputerComponents {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
+}
+
+jar {
+    manifest {
+        attributes(["Specification-Title"     : archivesBaseName,
+                    "Specification-Vendor"    : author,
+                    "Specification-Version"   : "1", // We are version 1 of ourselves
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : "${version}",
+                    "Implementation-Vendor"   : author,
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'modId', modId
+    inputs.property 'forgeMajor', forgeMajor
+    inputs.property 'mcVersion', mcVersion
+    inputs.property 'homepage', homepage
+    inputs.property 'displayName', modDisplayName
+    inputs.property 'capitalizedModId', capitalizedModId
+    inputs.property 'description', modDescription
+    inputs.property 'author', author
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*'
+        exclude '**/*.png'
+        expand 'version': project.version, 'modId': modId, 'forgeMajor': forgeMajor, 'mcVersion': mcVersion,
+                'homepage': homepage, 'displayName': modDisplayName, 'capitalizedModId': capitalizedModId,
+                'description': modDescription, 'author': author
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*'
+    }
+}
