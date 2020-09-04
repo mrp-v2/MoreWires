@@ -1,22 +1,12 @@
 # idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
+/.idea/
 
 # gradle
-build
-.gradle
+/build/
+/.gradle/
+/gradle/
+/gradlew
+/gradlew.bat
 
 # other
-eclipse
-run
-
-# Files from Forge MDK
-forge*changelog.txt
-
-# other other
-*.bat
-gradle
-gradlew
+/run/

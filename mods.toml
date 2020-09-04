@@ -4,13 +4,13 @@ license="All rights reserved"
 [[mods]]
 	modId="${modId}"
 	version="${version}"
-	displayName="${modDisplayName}"
-	logoFile="${logo}"
-	updateJSONURL="${updateURL}"
-	issueTrackerURL="${issuesURL}"
-	displayURL="${homepageURL}"
+	displayName="${displayName}"
+	logoFile="${capitalizedModId}Logo.png"
+	updateJSONURL="https://raw.githubusercontent.com/mrp-v2/ModUpdateFiles/master/${capitalizedModId}.json"
+	issueTrackerURL="${homepage}/issues"
+	displayURL="${homepage}"
 	authors="${author}"
-	description='''${modDescription}'''
+	description='''${description}'''
 [[dependencies.${modId}]]
     modId="forge"
     mandatory=true
