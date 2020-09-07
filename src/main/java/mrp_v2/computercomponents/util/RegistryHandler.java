@@ -17,6 +17,6 @@ public class RegistryHandler
 
     @SubscribeEvent public static void registerItems(final RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().registerAll(ObjectHolder.INFINIWIRE_BLOCK_ITEM);
+        event.getRegistry().registerAll(ObjectHolder.ALT_REDSTONE_BLOCK_ITEM, ObjectHolder.INFINIWIRE_BLOCK_ITEM);
     }
 }
