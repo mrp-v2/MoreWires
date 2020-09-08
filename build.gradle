@@ -76,6 +76,7 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
+    compile "mrp_v2.mrplibrary:MRPLibrary:1.16.2-1.0.0.0:dev"
 }
 
 jar {

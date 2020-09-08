@@ -12,15 +12,12 @@ import net.minecraft.state.properties.RedstoneSide;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 public class AltRedstoneWireBlock extends RedstoneWireBlock
 {
-    private static final ArrayList<AltRedstoneWireBlock> redstoneWireBlocks = new ArrayList<>();
     protected static boolean canProvidePower = true;
 
     public AltRedstoneWireBlock()
@@ -32,7 +29,6 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
     protected AltRedstoneWireBlock(Properties properties)
     {
         super(properties);
-        redstoneWireBlocks.add(this);
     }
 
     public BlockItem createBlockItem()
@@ -40,40 +36,6 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
         BlockItem item = new BlockItem(this, new Item.Properties().group(ItemGroup.REDSTONE));
         item.setRegistryName(Items.REDSTONE.getRegistryName());
         return item;
-    }
-
-    @Override
-    public void updateDiagonalNeighbors(BlockState state, IWorld worldIn, BlockPos pos, int flags, int recursionLeft)
-    {
-        BlockPos.Mutable mutableBlockPos = new BlockPos.Mutable();
-        for (Direction direction : Direction.Plane.HORIZONTAL)
-        {
-            RedstoneSide redstoneside = state.get(FACING_PROPERTY_MAP.get(direction));
-            if (redstoneside != RedstoneSide.NONE &&
-                    !isWire(worldIn.getBlockState(mutableBlockPos.setAndMove(pos, direction))))
-            {
-                mutableBlockPos.move(Direction.DOWN);
-                BlockState blockstate = worldIn.getBlockState(mutableBlockPos);
-                if (!blockstate.isIn(Blocks.OBSERVER))
-                {
-                    BlockPos blockpos = mutableBlockPos.offset(direction.getOpposite());
-                    BlockState blockstate1 =
-                            blockstate.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos),
-                                    worldIn, mutableBlockPos, blockpos);
-                    replaceBlockState(blockstate, blockstate1, worldIn, mutableBlockPos, flags, recursionLeft);
-                }
-                mutableBlockPos.setAndMove(pos, direction).move(Direction.UP);
-                BlockState blockstate3 = worldIn.getBlockState(mutableBlockPos);
-                if (!blockstate3.isIn(Blocks.OBSERVER))
-                {
-                    BlockPos blockpos1 = mutableBlockPos.offset(direction.getOpposite());
-                    BlockState blockstate2 =
-                            blockstate3.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos1),
-                                    worldIn, mutableBlockPos, blockpos1);
-                    replaceBlockState(blockstate3, blockstate2, worldIn, mutableBlockPos, flags, recursionLeft);
-                }
-            }
-        }
     }
 
     @Override
@@ -136,23 +98,6 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
         return Math.max(i, j - 1);
     }
 
-    @Override protected int getPower(BlockState state)
-    {
-        return isWire(state) ? state.get(POWER) : 0;
-    }
-
-    @Override protected void notifyWireNeighborsOfStateChange(World worldIn, BlockPos pos)
-    {
-        if (isWire(worldIn.getBlockState(pos)))
-        {
-            worldIn.notifyNeighborsOfStateChange(pos, this);
-            for (Direction direction : Direction.values())
-            {
-                worldIn.notifyNeighborsOfStateChange(pos.offset(direction), this);
-            }
-        }
-    }
-
     @Override public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     {
         return !canProvidePower ? 0 : blockState.getWeakPower(blockAccess, pos, side);
@@ -189,10 +134,5 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
     {
         return !blockState.isIn(ObjectHolder.INFINIWIRE_BLOCK) &&
                 RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
-    }
-
-    protected static boolean isWire(BlockState state)
-    {
-        return redstoneWireBlocks.contains(state.getBlock());
     }
 }
