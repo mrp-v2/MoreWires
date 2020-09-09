@@ -1,7 +1,6 @@
 package mrp_v2.computercomponents.block;
 
 import mrp_v2.computercomponents.util.ObjectHolder;
-import mrp_v2.mrplibrary.world.WorldOverrideWrapper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
@@ -17,7 +16,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -64,9 +62,7 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
         if (!doingUpdate)
         {
             doingUpdate = true;
-            HashMap<BlockPos, BlockState> overrides = new HashMap<>();
-            overrides.put(pos, state);
-            updateChain(new WorldOverrideWrapper(world, overrides), pos);
+            updateChain(world, pos);
             doingUpdate = false;
         }
     }
@@ -122,11 +118,11 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
         return updatedBlocks;
     }
 
-    private void updateChain(WorldOverrideWrapper world, BlockPos pos)
+    private void updateChain(World world, BlockPos pos)
     {
         HashSet<BlockPos> chain = getBlocksInChain(world, pos);
-        int newStrength = getStrongestSignalChain(world.getWorld(), chain);
-        updateNeighbors(world.getWorld(), updateInfiniwireChain(world.getWorld(), chain, newStrength));
+        int newStrength = getStrongestSignalChain(world, chain);
+        updateNeighbors(world, updateInfiniwireChain(world, chain, newStrength));
     }
 
     private int getStrongestSignalChain(World world, HashSet<BlockPos> chain)
@@ -145,14 +141,14 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
         return strongest;
     }
 
-    private HashSet<BlockPos> getBlocksInChain(WorldOverrideWrapper world, BlockPos pos)
+    private HashSet<BlockPos> getBlocksInChain(World world, BlockPos pos)
     {
         HashSet<BlockPos> blocks = new HashSet<>();
-        if (world.getBlockState(pos) == world.getWorld().getBlockState(pos))
+        if (world.getBlockState(pos).isIn(this))
         {
             blocks.add(pos);
         }
-        getBlocksInChain(world.getWorld(), pos, blocks);
+        getBlocksInChain(world, pos, blocks);
         return blocks;
     }
 
