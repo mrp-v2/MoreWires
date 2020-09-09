@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-        "layer0": "${modId}:item/infiniwire"
+        "layer0": "${modId}:item/yellow_infiniwire"
     }
 }

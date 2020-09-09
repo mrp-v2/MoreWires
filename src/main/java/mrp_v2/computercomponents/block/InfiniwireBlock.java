@@ -1,9 +1,8 @@
 package mrp_v2.computercomponents.block;
 
-import mrp_v2.computercomponents.util.ObjectHolder;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -12,48 +11,58 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.function.BiFunction;
 
 public class InfiniwireBlock extends AltRedstoneWireBlock
 {
-    public static final String ID = "infiniwire";
-    private static final Vector3f[] powerRGB = new Vector3f[16];
-
-    static
+    private static final HashMap<Block, HashMap<Integer, Vector3f>> blockAndStrengthToColorMap = new HashMap<>();
+    private final BiFunction<Float, Integer, Float> colorFunction = (colorPart, power) ->
     {
+        if (power == 0)
+        {
+            return colorPart * 0.3F;
+        }
+        return MathHelper.clamp(colorPart * (1 - (0.04F) * (16 - power)), 0.0F, 1.0F);
+    };
+    private boolean doingUpdate = false;
+
+    public InfiniwireBlock(Vector3f color, String id)
+    {
+        super(Properties.from(Blocks.REDSTONE_WIRE));
+        this.setRegistryName(id + "_infiniwire");
+        this.calculateColor(color);
+    }
+
+    private void calculateColor(Vector3f color)
+    {
+        HashMap<Integer, Vector3f> colors = new HashMap<>();
+        blockAndStrengthToColorMap.put(this, colors);
         for (int i = 0; i <= 15; ++i)
         {
-            float f = (float) i / 15.0F;
-            float r = MathHelper.clamp(f * f * 0.6F - 0.7F, 0.0F, 1.0F);
-            float g = MathHelper.clamp(f * f * 0.7F - 0.5F, 0.0F, 1.0F);
-            float b = f * 0.6F + (f > 0.0F ? 0.4F : 0.3F);
-            powerRGB[i] = new Vector3f(r, g, b);
+            float r = colorFunction.apply(color.getX(), i);
+            float g = colorFunction.apply(color.getY(), i);
+            float b = colorFunction.apply(color.getZ(), i);
+            colors.put(i, new Vector3f(r, g, b));
         }
     }
 
-    private boolean doingUpdate = false;
-
-    public InfiniwireBlock()
+    public static int getColor(BlockState state)
     {
-        super(Properties.from(Blocks.REDSTONE_WIRE));
-        this.setRegistryName(ID);
-    }
-
-    public static int getColor(int power)
-    {
-        Vector3f vector3f = powerRGB[power];
+        int power = state.get(POWER);
+        HashMap<Integer, Vector3f> colors = blockAndStrengthToColorMap.get(state.getBlock());
+        Vector3f vector3f = colors.get(power);
         return MathHelper.rgb(vector3f.getX(), vector3f.getY(), vector3f.getZ());
     }
 
     @Override public BlockItem createBlockItem()
     {
         BlockItem item = new BlockItem(this, new Item.Properties().group(ItemGroup.REDSTONE));
-        item.setRegistryName(ID);
+        item.setRegistryName(this.getRegistryName());
         return item;
     }
 
@@ -65,15 +74,6 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
             updateChain(world, pos);
             doingUpdate = false;
         }
-    }
-
-    @Override
-    protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
-            @Nullable Direction side)
-    {
-        return blockState.isIn(this) ||
-                !blockState.isIn(ObjectHolder.ALT_REDSTONE_WIRE_BLOCK) &&
-                        RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
     }
 
     private void updateNeighbors(World world, HashSet<BlockPos> updatedBlocks)
@@ -189,16 +189,16 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
                 switch (redstoneside)
                 {
                     case UP:
-                        this.spawnPoweredParticle(worldIn, rand, pos, powerRGB[i], direction, Direction.UP, -0.5F,
-                                0.5F);
+                        this.spawnPoweredParticle(worldIn, rand, pos, blockAndStrengthToColorMap.get(this).get(i),
+                                direction, Direction.UP, -0.5F, 0.5F);
                     case SIDE:
-                        this.spawnPoweredParticle(worldIn, rand, pos, powerRGB[i], Direction.DOWN, direction, 0.0F,
-                                0.5F);
+                        this.spawnPoweredParticle(worldIn, rand, pos, blockAndStrengthToColorMap.get(this).get(i),
+                                Direction.DOWN, direction, 0.0F, 0.5F);
                         break;
                     case NONE:
                     default:
-                        this.spawnPoweredParticle(worldIn, rand, pos, powerRGB[i], Direction.DOWN, direction, 0.0F,
-                                0.3F);
+                        this.spawnPoweredParticle(worldIn, rand, pos, blockAndStrengthToColorMap.get(this).get(i),
+                                Direction.DOWN, direction, 0.0F, 0.3F);
                 }
             }
         }

@@ -12,11 +12,13 @@ public class RegistryHandler
 {
     @SubscribeEvent public static void registerBlocks(final RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(ObjectHolder.ALT_REDSTONE_WIRE_BLOCK, ObjectHolder.INFINIWIRE_BLOCK);
+        Util.doOperationOn(event.getRegistry()::register, ObjectHolder.INFINIWIRE_BLOCKS);
+        event.getRegistry().register(ObjectHolder.ALT_REDSTONE_WIRE_BLOCK);
     }
 
     @SubscribeEvent public static void registerItems(final RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().registerAll(ObjectHolder.ALT_REDSTONE_BLOCK_ITEM, ObjectHolder.INFINIWIRE_BLOCK_ITEM);
+        Util.doOperationOn(event.getRegistry()::register, ObjectHolder.INFINIWIRE_BLOCK_ITEMS);
+        event.getRegistry().register(ObjectHolder.ALT_REDSTONE_BLOCK_ITEM);
     }
 }

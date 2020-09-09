@@ -3,9 +3,10 @@ package mrp_v2.computercomponents.client.util;
 import mrp_v2.computercomponents.ComputerComponents;
 import mrp_v2.computercomponents.block.InfiniwireBlock;
 import mrp_v2.computercomponents.util.ObjectHolder;
-import net.minecraft.block.RedstoneWireBlock;
+import mrp_v2.computercomponents.util.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,13 +18,13 @@ public class EventHandler
 {
     @SubscribeEvent public static void clientSetup(final FMLClientSetupEvent event)
     {
-        RenderTypeLookup.setRenderLayer(ObjectHolder.INFINIWIRE_BLOCK, RenderType.getCutout());
+        Util.doOperationOn((block) -> RenderTypeLookup.setRenderLayer(block, RenderType.getCutout()),
+                ObjectHolder.INFINIWIRE_BLOCKS);
     }
 
     @SubscribeEvent public static void registerBlockColors(final ColorHandlerEvent.Block event)
     {
-        event.getBlockColors()
-                .register((blockState, iBlockDisplayReader, blockPos, tint) -> InfiniwireBlock.getColor(
-                        blockState.get(RedstoneWireBlock.POWER)), ObjectHolder.INFINIWIRE_BLOCK);
+        IBlockColor colorer = (blockState, iBlockDisplayReader, blockPos, tint) -> InfiniwireBlock.getColor(blockState);
+        Util.doOperationOn((block) -> event.getBlockColors().register(colorer, block), ObjectHolder.INFINIWIRE_BLOCKS);
     }
 }

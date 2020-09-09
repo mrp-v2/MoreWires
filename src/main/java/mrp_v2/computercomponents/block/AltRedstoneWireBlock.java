@@ -135,8 +135,14 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
     protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
             @Nullable Direction side)
     {
-        return blockState.isIn(this) ||
-                !redstoneWires.contains(blockState.getBlock()) &&
-                        RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
+        if (blockState.isIn(this))
+        {
+            return true;
+        }
+        if (redstoneWires.contains(blockState.getBlock()))
+        {
+            return false;
+        }
+        return RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
     }
 }
