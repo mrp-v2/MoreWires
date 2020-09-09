@@ -1,6 +1,6 @@
 package mrp_v2.computercomponents.block;
 
-import mrp_v2.computercomponents.util.ObjectHolder;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
@@ -15,9 +15,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 
 public class AltRedstoneWireBlock extends RedstoneWireBlock
 {
+    private static final HashSet<Block> redstoneWires = new HashSet<>();
     protected static boolean canProvidePower = true;
 
     public AltRedstoneWireBlock()
@@ -29,6 +31,7 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
     protected AltRedstoneWireBlock(Properties properties)
     {
         super(properties);
+        redstoneWires.add(this);
     }
 
     public BlockItem createBlockItem()
@@ -133,7 +136,7 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
             @Nullable Direction side)
     {
         return blockState.isIn(this) ||
-                !blockState.isIn(ObjectHolder.INFINIWIRE_BLOCK) &&
+                !redstoneWires.contains(blockState.getBlock()) &&
                         RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
     }
 }
