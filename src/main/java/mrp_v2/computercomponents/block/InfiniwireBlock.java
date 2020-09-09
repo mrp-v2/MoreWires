@@ -80,19 +80,16 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
     {
         for (BlockPos pos : updatedBlocks)
         {
-            for (BlockPos blockpos : getRelevantUpdateNeighbors(pos))
+            for (BlockPos updatePos : getRelevantUpdateNeighbors(pos, true))
             {
-                if (world.getBlockState(blockpos).getBlock() != this)
-                {
-                    world.notifyNeighborsOfStateChange(blockpos, this);
-                }
+                world.notifyNeighborsOfStateChange(updatePos, this);
             }
         }
     }
 
     private HashSet<BlockPos> getRelevantWireNeighbors(BlockPos pos)
     {
-        HashSet<BlockPos> relevantWireNeighbors = getRelevantUpdateNeighbors(pos);
+        HashSet<BlockPos> relevantWireNeighbors = getRelevantUpdateNeighbors(pos, false);
         for (Direction horizontalDirection : Direction.Plane.HORIZONTAL)
         {
             for (Direction verticalDirection : Direction.Plane.VERTICAL)
@@ -103,9 +100,13 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
         return relevantWireNeighbors;
     }
 
-    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos)
+    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos, boolean includeSelf)
     {
         HashSet<BlockPos> relevantNeighbors = new HashSet<>();
+        if (includeSelf)
+        {
+            relevantNeighbors.add(pos);
+        }
         for (Direction direction : Direction.values())
         {
             relevantNeighbors.add(pos.offset(direction));
@@ -113,19 +114,15 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
         return relevantNeighbors;
     }
 
-    private void setPower(World world, BlockPos pos, int power)
-    {
-        world.setBlockState(pos, world.getBlockState(pos).with(POWER, power), 2);
-    }
-
     private HashSet<BlockPos> updateInfiniwireChain(World world, HashSet<BlockPos> chain, int strength)
     {
         HashSet<BlockPos> updatedBlocks = new HashSet<>();
         for (BlockPos pos : chain)
         {
-            if (strength != world.getBlockState(pos).get(POWER))
+            BlockState state = world.getBlockState(pos);
+            if (strength != state.get(POWER))
             {
-                setPower(world, pos, strength);
+                world.setBlockState(pos, state.with(POWER, strength), 2);
                 updatedBlocks.add(pos);
             }
         }
