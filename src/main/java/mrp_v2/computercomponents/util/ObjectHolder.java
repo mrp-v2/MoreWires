@@ -3,7 +3,6 @@ package mrp_v2.computercomponents.util;
 import mrp_v2.computercomponents.block.AltRedstoneWireBlock;
 import mrp_v2.computercomponents.block.InfiniwireBlock;
 import net.minecraft.item.BlockItem;
-import net.minecraft.util.math.vector.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class ObjectHolder
@@ -12,11 +11,11 @@ public class ObjectHolder
     public static final BlockItem ALT_REDSTONE_BLOCK_ITEM;
     public static final InfiniwireBlock[] INFINIWIRE_BLOCKS;
     public static final BlockItem[] INFINIWIRE_BLOCK_ITEMS;
-    public static final Pair<Vector3f, String>[] COLORS = new Pair[]{Pair.of(new Vector3f(0.0F, 0.0F, 1.0F), "blue"),
-            Pair.of(new Vector3f(0.0F, 1.0F, 0.0F), "green"),
-            Pair.of(new Vector3f(1.0F, 0.65F, 0.0F), "orange"),
-            Pair.of(new Vector3f(1.0F, 1.0F, 0.0F), "yellow"),
-            Pair.of(new Vector3f(1.0F, 0.43F, 0.71F), "pink")};
+    public static final Pair<Float, String>[] COLORS = new Pair[]{Pair.of(2.0F / 3.0F, "blue"),
+            Pair.of(1.0F / 3.0F, "green"),
+            Pair.of(1.0F / 12.0F, "orange"),
+            Pair.of(1.0F / 6.0F, "yellow"),
+            Pair.of(5.0F / 6.0F, "pink")};
 
     static
     {
@@ -25,7 +24,7 @@ public class ObjectHolder
         INFINIWIRE_BLOCKS = new InfiniwireBlock[COLORS.length];
         INFINIWIRE_BLOCK_ITEMS = new BlockItem[COLORS.length];
         int i = 0;
-        for (Pair<Vector3f, String> color : COLORS)
+        for (Pair<Float, String> color : COLORS)
         {
             INFINIWIRE_BLOCKS[i] = new InfiniwireBlock(color.getLeft(), color.getRight());
             INFINIWIRE_BLOCK_ITEMS[i] = INFINIWIRE_BLOCKS[i].createBlockItem();

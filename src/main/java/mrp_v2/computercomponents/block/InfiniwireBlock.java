@@ -3,60 +3,68 @@ package mrp_v2.computercomponents.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.state.properties.RedstoneSide;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.function.BiFunction;
 
 public class InfiniwireBlock extends AltRedstoneWireBlock
 {
-    private static final HashMap<Block, HashMap<Integer, Vector3f>> blockAndStrengthToColorMap = new HashMap<>();
-    private final BiFunction<Float, Integer, Float> colorFunction = (colorPart, power) ->
-    {
-        if (power == 0)
-        {
-            return colorPart * 0.3F;
-        }
-        return MathHelper.clamp(colorPart * (1 - (0.04F) * (16 - power)), 0.0F, 1.0F);
-    };
-    private boolean doingUpdate = false;
+    private static final HashMap<Block, HashMap<Integer, Pair<Integer, Vector3f>>> blockAndStrengthToColorMap =
+            new HashMap<>();
+    private static boolean doingUpdate = false;
 
-    public InfiniwireBlock(Vector3f color, String id)
+    public InfiniwireBlock(float hueChange, String id)
     {
         super(Properties.from(Blocks.REDSTONE_WIRE));
         this.setRegistryName(id + "_infiniwire");
-        this.calculateColor(color);
+        blockAndStrengthToColorMap.put(this, calculateColors(hueChange));
     }
 
-    private void calculateColor(Vector3f color)
+    private static HashMap<Integer, Pair<Integer, Vector3f>> calculateColors(float hueChange)
     {
-        HashMap<Integer, Vector3f> colors = new HashMap<>();
-        blockAndStrengthToColorMap.put(this, colors);
-        for (int i = 0; i <= 15; ++i)
+        while (hueChange > 1)
         {
-            float r = colorFunction.apply(color.getX(), i);
-            float g = colorFunction.apply(color.getY(), i);
-            float b = colorFunction.apply(color.getZ(), i);
-            colors.put(i, new Vector3f(r, g, b));
+            hueChange--;
         }
+        while (hueChange < 0)
+        {
+            hueChange++;
+        }
+        HashMap<Integer, Pair<Integer, Vector3f>> colors = new HashMap<>();
+        for (int i = 0; i <= 15; i++)
+        {
+            Vector3f RGBColorVecF = RedstoneWireBlock.powerRGB[i];
+            Vector3i RGBColorVecI =
+                    new Vector3i(RGBColorVecF.getX() * 255, RGBColorVecF.getY() * 255, RGBColorVecF.getZ() * 255);
+            float[] hsb = Color.RGBtoHSB(RGBColorVecI.getX(), RGBColorVecI.getY(), RGBColorVecI.getZ(), null);
+            hsb[0] += hueChange;
+            if (hsb[0] > 1)
+            {
+                hsb[0]--;
+            }
+            int color = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+            Vector3f colorVec = new Vector3f((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+            colors.put(i, Pair.of(color, colorVec));
+        }
+        return colors;
     }
 
     public static int getColor(BlockState state)
     {
-        int power = state.get(POWER);
-        HashMap<Integer, Vector3f> colors = blockAndStrengthToColorMap.get(state.getBlock());
-        Vector3f vector3f = colors.get(power);
-        return MathHelper.rgb(vector3f.getX(), vector3f.getY(), vector3f.getZ());
+        return blockAndStrengthToColorMap.get(state.getBlock()).get(state.get(POWER)).getLeft();
     }
 
     @Override public BlockItem createBlockItem()
@@ -189,16 +197,19 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
                 switch (redstoneside)
                 {
                     case UP:
-                        this.spawnPoweredParticle(worldIn, rand, pos, blockAndStrengthToColorMap.get(this).get(i),
-                                direction, Direction.UP, -0.5F, 0.5F);
+                        this.spawnPoweredParticle(worldIn, rand, pos,
+                                blockAndStrengthToColorMap.get(this).get(i).getRight(), direction, Direction.UP, -0.5F,
+                                0.5F);
                     case SIDE:
-                        this.spawnPoweredParticle(worldIn, rand, pos, blockAndStrengthToColorMap.get(this).get(i),
-                                Direction.DOWN, direction, 0.0F, 0.5F);
+                        this.spawnPoweredParticle(worldIn, rand, pos,
+                                blockAndStrengthToColorMap.get(this).get(i).getRight(), Direction.DOWN, direction, 0.0F,
+                                0.5F);
                         break;
                     case NONE:
                     default:
-                        this.spawnPoweredParticle(worldIn, rand, pos, blockAndStrengthToColorMap.get(this).get(i),
-                                Direction.DOWN, direction, 0.0F, 0.3F);
+                        this.spawnPoweredParticle(worldIn, rand, pos,
+                                blockAndStrengthToColorMap.get(this).get(i).getRight(), Direction.DOWN, direction, 0.0F,
+                                0.3F);
                 }
             }
         }

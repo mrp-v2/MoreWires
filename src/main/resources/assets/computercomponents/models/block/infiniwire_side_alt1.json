@@ -1,0 +1,6 @@
+{
+    "parent": "${modId}:block/infiniwire_side_alt",
+    "textures": {
+        "line": "${modId}:block/infiniwire_line1"
+    }
+}
