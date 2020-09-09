@@ -46,8 +46,8 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
         BlockState offsetState = reader.getBlockState(offsetPos);
         if (nonNormalCubeAbove)
         {
-            boolean canPlaceOnTopOf = this.canPlaceOnTopOf(reader, offsetPos, offsetState);
-            if (canPlaceOnTopOf &&
+            boolean canPlaceOnTopOfOffset = this.canPlaceOnTopOf(reader, offsetPos, offsetState);
+            if (canPlaceOnTopOfOffset &&
                     this.canThisConnectTo(reader.getBlockState(offsetPos.up()), reader, offsetPos.up(), null))
             {
                 if (offsetState.isSolidSide(reader, offsetPos, direction.getOpposite()))
@@ -132,7 +132,8 @@ public class AltRedstoneWireBlock extends RedstoneWireBlock
     protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
             @Nullable Direction side)
     {
-        return !blockState.isIn(ObjectHolder.INFINIWIRE_BLOCK) &&
-                RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
+        return blockState.isIn(this) ||
+                !blockState.isIn(ObjectHolder.INFINIWIRE_BLOCK) &&
+                        RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
     }
 }

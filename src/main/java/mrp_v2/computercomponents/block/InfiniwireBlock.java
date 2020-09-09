@@ -71,15 +71,16 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
     protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
             @Nullable Direction side)
     {
-        return !blockState.isIn(ObjectHolder.ALT_REDSTONE_WIRE_BLOCK) &&
-                RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
+        return blockState.isIn(this) ||
+                !blockState.isIn(ObjectHolder.ALT_REDSTONE_WIRE_BLOCK) &&
+                        RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
     }
 
     private void updateNeighbors(World world, HashSet<BlockPos> updatedBlocks)
     {
         for (BlockPos pos : updatedBlocks)
         {
-            for (BlockPos blockpos : getRelevantNeighbors(pos))
+            for (BlockPos blockpos : getRelevantUpdateNeighbors(pos))
             {
                 if (world.getBlockState(blockpos).getBlock() != this)
                 {
@@ -89,7 +90,20 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
         }
     }
 
-    private HashSet<BlockPos> getRelevantNeighbors(BlockPos pos)
+    private HashSet<BlockPos> getRelevantWireNeighbors(BlockPos pos)
+    {
+        HashSet<BlockPos> relevantWireNeighbors = getRelevantUpdateNeighbors(pos);
+        for (Direction horizontalDirection : Direction.Plane.HORIZONTAL)
+        {
+            for (Direction verticalDirection : Direction.Plane.VERTICAL)
+            {
+                relevantWireNeighbors.add(pos.offset(horizontalDirection).offset(verticalDirection));
+            }
+        }
+        return relevantWireNeighbors;
+    }
+
+    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos)
     {
         HashSet<BlockPos> relevantNeighbors = new HashSet<>();
         for (Direction direction : Direction.values())
@@ -154,7 +168,7 @@ public class InfiniwireBlock extends AltRedstoneWireBlock
 
     private void getBlocksInChain(World world, BlockPos pos, HashSet<BlockPos> foundBlocks)
     {
-        for (BlockPos neighborPos : getRelevantNeighbors(pos))
+        for (BlockPos neighborPos : getRelevantWireNeighbors(pos))
         {
             BlockState state = world.getBlockState(neighborPos);
             if (state.isIn(this))
