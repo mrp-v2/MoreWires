@@ -3,7 +3,7 @@
     "textures": {
         "particle": "${modId}:block/infiniwire_dot",
         "line": "${modId}:block/infiniwire_line0",
-        "overlay": "${modId}:block/redstone_dust_overlay"
+        "overlay": "minecraft:block/redstone_dust_overlay"
     },
     "elements": [
         {

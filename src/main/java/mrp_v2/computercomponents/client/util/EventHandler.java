@@ -1,7 +1,7 @@
 package mrp_v2.computercomponents.client.util;
 
 import mrp_v2.computercomponents.ComputerComponents;
-import mrp_v2.computercomponents.block.InfiniwireBlock;
+import mrp_v2.computercomponents.block.AltRedstoneWireBlock;
 import mrp_v2.computercomponents.util.ObjectHolder;
 import mrp_v2.computercomponents.util.Util;
 import net.minecraft.client.renderer.RenderType;
@@ -24,7 +24,7 @@ public class EventHandler
 
     @SubscribeEvent public static void registerBlockColors(final ColorHandlerEvent.Block event)
     {
-        IBlockColor colorer = (blockState, iBlockDisplayReader, blockPos, tint) -> InfiniwireBlock.getColor(blockState);
+        IBlockColor colorer = (blockState, iBlockDisplayReader, blockPos, tint) -> AltRedstoneWireBlock.getColor(blockState);
         Util.doOperationOn((block) -> event.getBlockColors().register(colorer, block), ObjectHolder.INFINIWIRE_BLOCKS);
     }
 }
