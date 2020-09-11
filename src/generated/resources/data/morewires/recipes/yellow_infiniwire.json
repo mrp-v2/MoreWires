@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "item": "morewires:yellow_wire"
+    },
+    {
+      "tag": "forge:ingots/iron"
+    }
+  ],
+  "result": {
+    "item": "morewires:yellow_infiniwire",
+    "count": 8
+  }
+}

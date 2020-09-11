@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "morewires:orange_infiniwire"
+    ]
+  },
+  "criteria": {
+    "has_wire": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "morewires:orange_wire"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "morewires:orange_infiniwire"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wire",
+      "has_the_recipe"
+    ]
+  ]
+}

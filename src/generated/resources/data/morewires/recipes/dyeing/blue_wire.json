@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "forge:dyes/blue"
+    }
+  ],
+  "result": {
+    "item": "morewires:blue_wire",
+    "count": 8
+  }
+}

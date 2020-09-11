@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "morewires:dyeing/yellow_wire"
+    ]
+  },
+  "criteria": {
+    "has_wire": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "morewires:wires"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "morewires:dyeing/yellow_wire"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wire",
+      "has_the_recipe"
+    ]
+  ]
+}

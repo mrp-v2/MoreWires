@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "morewires:infiniwires"
+    },
+    {
+      "tag": "forge:dyes/green"
+    }
+  ],
+  "result": {
+    "item": "morewires:green_infiniwire",
+    "count": 8
+  }
+}

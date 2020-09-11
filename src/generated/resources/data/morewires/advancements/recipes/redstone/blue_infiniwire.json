@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "morewires:blue_infiniwire"
+    ]
+  },
+  "criteria": {
+    "has_wire": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "morewires:blue_wire"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "morewires:blue_infiniwire"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wire",
+      "has_the_recipe"
+    ]
+  ]
+}
