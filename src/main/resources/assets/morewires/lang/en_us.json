@@ -1,0 +1,13 @@
+{
+    "block.${modId}.blue_infiniwire": "Blue Infiniwire",
+    "block.${modId}.blue_wire": "Blue Wire",
+    "block.${modId}.green_infiniwire": "Green Infiniwire",
+    "block.${modId}.green_wire": "Green Wire",
+    "block.${modId}.orange_infiniwire": "Orange Infiniwire",
+    "block.${modId}.orange_wire": "Orange Wire",
+    "block.${modId}.pink_infiniwire": "Pink Infiniwire",
+    "block.${modId}.pink_wire": "Pink Wire",
+    "block.${modId}.red_infiniwire": "Red Infiniwire",
+    "block.${modId}.yellow_infiniwire": "Yellow Infiniwire",
+    "block.${modId}.yellow_wire": "Yellow Wire"
+}

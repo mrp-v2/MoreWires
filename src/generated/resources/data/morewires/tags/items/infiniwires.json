@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "morewires:red_infiniwire",
+    "morewires:blue_infiniwire",
+    "morewires:green_infiniwire",
+    "morewires:orange_infiniwire",
+    "morewires:pink_infiniwire",
+    "morewires:yellow_infiniwire"
+  ]
+}

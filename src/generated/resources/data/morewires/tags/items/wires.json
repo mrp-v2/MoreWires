@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:redstone",
+    "morewires:blue_wire",
+    "morewires:green_wire",
+    "morewires:orange_wire",
+    "morewires:pink_wire",
+    "morewires:yellow_wire",
+    {
+      "id": "#forge:dusts/redstone",
+      "required": false
+    }
+  ]
+}
