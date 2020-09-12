@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/redstone_dust_side_alt0",
+  "textures": {
+    "line": "morewires:block/infiniwire_line0"
+  }
+}
