@@ -19,8 +19,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
 
     public InfiniwireBlock(float hueChange, String id)
     {
-        super(Properties.from(Blocks.REDSTONE_WIRE), hueChange);
-        this.setRegistryName(id + "_infiniwire");
+        super(Properties.from(Blocks.REDSTONE_WIRE), hueChange, id + "_infiniwire");
     }
 
     @Override public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)

@@ -26,20 +26,20 @@ import java.util.Random;
 
 public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 {
-    private static final HashMap<Block, HashMap<Integer, Pair<Integer, Vector3f>>> blockAndStrengthToColorMap =
-            new HashMap<>();
+    private static final HashMap<AdjustedRedstoneWireBlock, HashMap<Integer, Pair<Integer, Vector3f>>>
+            blockAndStrengthToColorMap = new HashMap<>();
     private static final HashSet<Block> redstoneWires = new HashSet<>();
     protected static boolean canProvidePower = true;
 
     public AdjustedRedstoneWireBlock(float hueChange, String id)
     {
-        this(Properties.from(Blocks.REDSTONE_WIRE), hueChange);
-        this.setRegistryName(id + "_wire");
+        this(Properties.from(Blocks.REDSTONE_WIRE), hueChange, id + "_wire");
     }
 
-    protected AdjustedRedstoneWireBlock(Properties properties, float hueChange)
+    protected AdjustedRedstoneWireBlock(Properties properties, float hueChange, String id)
     {
         super(properties);
+        this.setRegistryName(id);
         redstoneWires.add(this);
         blockAndStrengthToColorMap.put(this, calculateColors(hueChange));
     }
@@ -224,5 +224,28 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
             return false;
         }
         return RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
+    }
+
+    @Override public int hashCode()
+    {
+        return this.getRegistryName().hashCode();
+    }
+
+    @Override public boolean equals(Object obj)
+    {
+        if (obj == this)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (!(obj instanceof AdjustedRedstoneWireBlock))
+        {
+            return false;
+        }
+        AdjustedRedstoneWireBlock other = (AdjustedRedstoneWireBlock) obj;
+        return this.getRegistryName().equals(other.getRegistryName());
     }
 }
