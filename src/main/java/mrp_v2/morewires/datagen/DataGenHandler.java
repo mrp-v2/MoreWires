@@ -19,10 +19,11 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
             generator.addProvider(new LootTableGenerator(generator));
             generator.addProvider(new RecipeGenerator(generator));
             BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator, MoreWires.ID, existingFileHelper);
-            generator.addProvider(new ItemTagGenerator(generator, blockTagsProvider, MoreWires.ID, existingFileHelper));
+            generator.addProvider(new ItemTagGenerator(generator, blockTagsProvider, existingFileHelper));
         }
         if (event.includeClient())
         {
+            generator.addProvider(new ItemModelGenerator(generator, existingFileHelper));
         }
     }
 }

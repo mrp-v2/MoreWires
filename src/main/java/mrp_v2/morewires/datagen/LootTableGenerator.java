@@ -44,7 +44,7 @@ public class LootTableGenerator extends LootTableProvider
 
     @Override public String getName()
     {
-        return MoreWires.DISPLAY_NAME + " " + super.getName();
+        return super.getName() + ": " + MoreWires.ID;
     }
 
     private static class LootTables extends BlockLootTables

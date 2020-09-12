@@ -13,22 +13,22 @@ import javax.annotation.Nullable;
 
 public class ItemTagGenerator extends ItemTagsProvider
 {
-    public ItemTagGenerator(DataGenerator dataGenerator, BlockTagsProvider blockTagProvider, String modId,
+    public ItemTagGenerator(DataGenerator dataGenerator, BlockTagsProvider blockTagProvider,
             @Nullable ExistingFileHelper existingFileHelper)
     {
-        super(dataGenerator, blockTagProvider, modId, existingFileHelper);
+        super(dataGenerator, blockTagProvider, MoreWires.ID, existingFileHelper);
     }
 
     @Override protected void registerTags()
     {
-        this.getOrCreateBuilder(ObjectHolder.WIRES_TAG).add(ObjectHolder.WIRE_BLOCK_ITEMS)
-                //.addTag(Tags.Items.DUSTS_REDSTONE)
+        this.getOrCreateBuilder(ObjectHolder.WIRES_TAG)
+                .add(ObjectHolder.WIRE_BLOCK_ITEMS)
                 .addOptionalTag(new ResourceLocation(Tags.Items.DUSTS_REDSTONE.getName().toString()));
         this.getOrCreateBuilder(ObjectHolder.INFINIWIRES_TAG).add(ObjectHolder.INFINIWIRE_BLOCK_ITEMS);
     }
 
     @Override public String getName()
     {
-        return MoreWires.DISPLAY_NAME + " " + super.getName();
+        return super.getName() + ": " + MoreWires.ID;
     }
 }

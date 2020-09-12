@@ -9,6 +9,7 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
@@ -34,7 +35,7 @@ public class RecipeGenerator extends RecipeProvider
 
     @Override public String getName()
     {
-        return MoreWires.DISPLAY_NAME + " " + super.getName();
+        return super.getName() + ": " + MoreWires.ID;
     }
 
     private void makeWireRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
@@ -65,7 +66,13 @@ public class RecipeGenerator extends RecipeProvider
         for (int i = 0; i < ObjectHolder.INFINIWIRE_BLOCK_ITEMS.length; i++)
         {
             AdjustedRedstoneItem item = ObjectHolder.INFINIWIRE_BLOCK_ITEMS[i];
-            makeDyedInfiniwireRecipe(iFinishedRecipeConsumer, item, ObjectHolder.WIRE_BLOCK_ITEMS[i]);
+            if (item.getRegistryName().equals(Items.REDSTONE.getRegistryName()))
+            {
+                makeDyedInfiniwireRecipe(iFinishedRecipeConsumer, item, Tags.Items.DUSTS_REDSTONE);
+            } else
+            {
+                makeDyedInfiniwireRecipe(iFinishedRecipeConsumer, item, ObjectHolder.WIRE_BLOCK_ITEMS[i]);
+            }
             makeDyeingInfiniwireRecipe(iFinishedRecipeConsumer, item, item.getDyeTag());
         }
     }
@@ -88,5 +95,15 @@ public class RecipeGenerator extends RecipeProvider
                 .addIngredient(dyeTag)
                 .addCriterion("has_infiniwire", hasItem(ObjectHolder.INFINIWIRES_TAG))
                 .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, getID(result)));
+    }
+
+    private void makeDyedInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
+            ITag<Item> ingredient)
+    {
+        ShapelessRecipeBuilder.shapelessRecipe(result, 8)
+                .addIngredient(Ingredient.fromTag(ingredient), 8)
+                .addIngredient(Tags.Items.INGOTS_IRON)
+                .addCriterion("has_wire", hasItem(ingredient))
+                .build(iFinishedRecipeConsumer);
     }
 }

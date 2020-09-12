@@ -1,6 +1,5 @@
 package mrp_v2.morewires.util;
 
-import mrp_v2.morewires.MoreWires;
 import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
@@ -21,8 +20,10 @@ public class ObjectHolder
     public static final InfiniwireBlock[] INFINIWIRE_BLOCKS;
     public static final AdjustedRedstoneItem[] INFINIWIRE_BLOCK_ITEMS;
     public static final ArrayList<Triple<Float, String, ITag<Item>>> COLORS = new ArrayList<>();
-    public static final ITag.INamedTag<Item> WIRES_TAG = ItemTags.makeWrapperTag(MoreWires.ID + ":wires");
-    public static final ITag.INamedTag<Item> INFINIWIRES_TAG = ItemTags.makeWrapperTag(MoreWires.ID + ":infiniwires");
+    public static final Tags.IOptionalNamedTag<Item> WIRES_TAG =
+            ItemTags.createOptional(Util.makeResourceLocation("wires"));
+    public static final Tags.IOptionalNamedTag<Item> INFINIWIRES_TAG =
+            ItemTags.createOptional(Util.makeResourceLocation("infiniwires"));
 
     static
     {

@@ -35,7 +35,7 @@ repositories {
 sourceSets {
     main {
         resources {
-            include 'src/generated/resources'
+            srcDirs 'src/generated/resources'
         }
     }
 }
@@ -68,7 +68,8 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', modId, '--all', '--output', file('src/generated/resources/')
+            args '--mod', modId, '--all', '--output', file('src/generated/resources/'), '--existing',
+                    sourceSets.main.output.resourcesDir
             mods {
                 morewires {
                     source sourceSets.main
@@ -114,14 +115,21 @@ processResources {
     inputs.property 'issuesURL', issuesURL
     inputs.property 'logo', logo
     from(sourceSets.main.resources.srcDirs) {
-        include '**/*'
-        exclude '**/*.png'
+        include 'assets/morewires/blockstates/*'
+        include 'assets/morewires/lang/*'
+        include 'assets/morewires/models/block/*'
+        include 'META-INF/mods.toml'
+        include 'pack.mcmeta'
         expand 'version': project.version, 'modId': modId, 'forgeMajor': forgeMajor, 'mcVersion': mcVersion,
                 'homepageURL': homepageURL, 'modDisplayName': modDisplayName, 'capitalizedModId': capitalizedModId,
                 'modDescription': modDescription, 'author': author, 'updateURL': updateURL, 'issuesURL': issuesURL,
                 'logo': logo
     }
     from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*'
+        exclude 'assets/morewires/blockstates/*'
+        exclude 'assets/morewires/lang/*'
+        exclude 'assets/morewires/models/block/*'
+        exclude 'META-INF/mods.toml'
+        exclude 'pack.mcmeta'
     }
 }
