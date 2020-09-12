@@ -67,7 +67,8 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
                 hsb[0]--;
             }
             int color = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-            Vector3f colorVec = new Vector3f((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+            Vector3f colorVec = new Vector3f(((color >> 16) & 0xFF) / 255.0F, ((color >> 8) & 0xFF) / 255.0F,
+                    (color & 0xFF) / 255.0F);
             colors.put(i, Pair.of(color, colorVec));
         }
         return colors;
