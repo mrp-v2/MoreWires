@@ -25,7 +25,6 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
         {
             generator.addProvider(new ItemModelGenerator(generator, existingFileHelper));
             generator.addProvider(new BlockStateGenerator(generator, existingFileHelper));
-            generator.addProvider(new BlockModelGenerator(generator, existingFileHelper));
         }
     }
 }

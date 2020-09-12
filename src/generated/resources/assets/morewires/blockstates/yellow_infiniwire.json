@@ -1,0 +1,120 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "west": "none",
+        "south": "none",
+        "north": "none",
+        "east": "none"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_dot"
+      }
+    },
+    {
+      "when": {
+        "north": "up|side",
+        "east": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_dot"
+      }
+    },
+    {
+      "when": {
+        "south": "up|side",
+        "east": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_dot"
+      }
+    },
+    {
+      "when": {
+        "west": "up|side",
+        "south": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_dot"
+      }
+    },
+    {
+      "when": {
+        "west": "up|side",
+        "north": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_dot"
+      }
+    },
+    {
+      "when": {
+        "north": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_side0"
+      }
+    },
+    {
+      "when": {
+        "south": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_side_alt0"
+      }
+    },
+    {
+      "when": {
+        "east": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_side_alt1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "up|side"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_side1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "north": "up"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_up"
+      }
+    },
+    {
+      "when": {
+        "east": "up"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_up",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "up"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_up",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "up"
+      },
+      "apply": {
+        "model": "morewires:block/infiniwire_up",
+        "y": 270
+      }
+    }
+  ]
+}

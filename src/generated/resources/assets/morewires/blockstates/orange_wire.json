@@ -1,0 +1,120 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "west": "none",
+        "south": "none",
+        "north": "none",
+        "east": "none"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_dot"
+      }
+    },
+    {
+      "when": {
+        "north": "up|side",
+        "east": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_dot"
+      }
+    },
+    {
+      "when": {
+        "south": "up|side",
+        "east": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_dot"
+      }
+    },
+    {
+      "when": {
+        "west": "up|side",
+        "south": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_dot"
+      }
+    },
+    {
+      "when": {
+        "west": "up|side",
+        "north": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_dot"
+      }
+    },
+    {
+      "when": {
+        "north": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_side0"
+      }
+    },
+    {
+      "when": {
+        "south": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_side_alt0"
+      }
+    },
+    {
+      "when": {
+        "east": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_side_alt1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "up|side"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_side1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "north": "up"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_up"
+      }
+    },
+    {
+      "when": {
+        "east": "up"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_up",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "up"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_up",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "up"
+      },
+      "apply": {
+        "model": "minecraft:block/redstone_dust_up",
+        "y": 270
+      }
+    }
+  ]
+}
