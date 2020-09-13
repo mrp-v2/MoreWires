@@ -41,12 +41,14 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
 
     private void updateNeighbors(World world, HashSet<BlockPos> updatedBlocks)
     {
+        HashSet<BlockPos> toUpdate = new HashSet<>();
         for (BlockPos pos : updatedBlocks)
         {
-            for (BlockPos updatePos : getRelevantUpdateNeighbors(pos, true))
-            {
-                world.notifyNeighborsOfStateChange(updatePos, this);
-            }
+            toUpdate.addAll(getRelevantUpdateNeighbors(pos, true));
+        }
+        for (BlockPos updatePos : toUpdate)
+        {
+            world.notifyNeighborsOfStateChange(updatePos, this);
         }
     }
 
