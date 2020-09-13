@@ -102,7 +102,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
     private int getStrongestSignalChain(World world, HashSet<BlockPos> chain)
     {
         int strongest = 0;
-        globalCanProvidePower = false;
+        this.canProvidePower = false;
         for (BlockPos pos : chain)
         {
             int test = world.getRedstonePowerFromNeighbors(pos);
@@ -111,7 +111,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
                 strongest = test;
             }
         }
-        globalCanProvidePower = true;
+        this.canProvidePower = true;
         return strongest;
     }
 
