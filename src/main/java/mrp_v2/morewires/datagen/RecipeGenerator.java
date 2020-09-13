@@ -53,6 +53,7 @@ public class RecipeGenerator extends RecipeProvider
                 .addIngredient(Ingredient.fromTag(ObjectHolder.WIRES_TAG), 8)
                 .addIngredient(dyeTag)
                 .addCriterion("has_wire", hasItem(ObjectHolder.WIRES_TAG))
+                .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, getID(result)));
     }
 
@@ -84,6 +85,7 @@ public class RecipeGenerator extends RecipeProvider
                 .addIngredient(ingredient, 8)
                 .addIngredient(Tags.Items.INGOTS_IRON)
                 .addCriterion("has_wire", hasItem(ingredient))
+                .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer);
     }
 
@@ -94,6 +96,7 @@ public class RecipeGenerator extends RecipeProvider
                 .addIngredient(Ingredient.fromTag(ObjectHolder.INFINIWIRES_TAG), 8)
                 .addIngredient(dyeTag)
                 .addCriterion("has_infiniwire", hasItem(ObjectHolder.INFINIWIRES_TAG))
+                .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, getID(result)));
     }
 
@@ -104,6 +107,7 @@ public class RecipeGenerator extends RecipeProvider
                 .addIngredient(Ingredient.fromTag(ingredient), 8)
                 .addIngredient(Tags.Items.INGOTS_IRON)
                 .addCriterion("has_wire", hasItem(ingredient))
+                .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer);
     }
 }

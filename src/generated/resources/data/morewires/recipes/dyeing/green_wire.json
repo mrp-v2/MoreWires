@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "green_wire",
   "ingredients": [
     {
       "tag": "morewires:wires"

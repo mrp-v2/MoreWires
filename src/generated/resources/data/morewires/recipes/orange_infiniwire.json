@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "orange_infiniwire",
   "ingredients": [
     {
       "item": "morewires:orange_wire"

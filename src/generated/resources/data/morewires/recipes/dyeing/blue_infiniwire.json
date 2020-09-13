@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "blue_infiniwire",
   "ingredients": [
     {
       "tag": "morewires:infiniwires"
