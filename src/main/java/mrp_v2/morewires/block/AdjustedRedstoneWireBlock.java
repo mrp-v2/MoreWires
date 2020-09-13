@@ -29,7 +29,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     private static final HashMap<AdjustedRedstoneWireBlock, HashMap<Integer, Pair<Integer, Vector3f>>>
             blockAndStrengthToColorMap = new HashMap<>();
     private static final HashSet<Block> redstoneWires = new HashSet<>();
-    protected static boolean canProvidePower = true;
+    protected static boolean globalCanProvidePower = true;
 
     public AdjustedRedstoneWireBlock(float hueChange, String id)
     {
@@ -128,9 +128,9 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 
     @Override protected int getStrongestSignal(World world, BlockPos pos)
     {
-        canProvidePower = false;
+        globalCanProvidePower = false;
         int i = world.getRedstonePowerFromNeighbors(pos);
-        canProvidePower = true;
+        globalCanProvidePower = true;
         int j = 0;
         if (i < 15)
         {
@@ -155,12 +155,12 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 
     @Override public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     {
-        return !canProvidePower ? 0 : blockState.getWeakPower(blockAccess, pos, side);
+        return !globalCanProvidePower ? 0 : blockState.getWeakPower(blockAccess, pos, side);
     }
 
     @Override public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     {
-        if (canProvidePower && side != Direction.DOWN)
+        if (globalCanProvidePower && side != Direction.DOWN)
         {
             int i = blockState.get(POWER);
             if (i == 0)
@@ -181,7 +181,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 
     @Override public boolean canProvidePower(BlockState state)
     {
-        return canProvidePower;
+        return globalCanProvidePower;
     }
 
     @Override public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)

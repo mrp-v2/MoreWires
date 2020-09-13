@@ -115,9 +115,7 @@ processResources {
     inputs.property 'issuesURL', issuesURL
     inputs.property 'logo', logo
     from(sourceSets.main.resources.srcDirs) {
-        include 'assets/morewires/blockstates/*'
         include 'assets/morewires/lang/*'
-        include 'assets/morewires/models/block/*'
         include 'META-INF/mods.toml'
         include 'pack.mcmeta'
         expand 'version': project.version, 'modId': modId, 'forgeMajor': forgeMajor, 'mcVersion': mcVersion,
@@ -126,9 +124,7 @@ processResources {
                 'logo': logo
     }
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'assets/morewires/blockstates/*'
         exclude 'assets/morewires/lang/*'
-        exclude 'assets/morewires/models/block/*'
         exclude 'META-INF/mods.toml'
         exclude 'pack.mcmeta'
     }
