@@ -9,11 +9,7 @@ import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.state.properties.RedstoneSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BlockStateGenerator extends BlockStateProvider
@@ -123,9 +119,25 @@ public class BlockStateGenerator extends BlockStateProvider
                 .condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP)
                 .end()
                 .part()
+                .modelFile(side0Model)
+                .addModel()
+                .condition(RedstoneWireBlock.NORTH, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.EAST, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP)
+                .condition(RedstoneWireBlock.WEST, RedstoneSide.NONE)
+                .end()
+                .part()
                 .modelFile(sideAlt0Model)
                 .addModel()
                 .condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP)
+                .end()
+                .part()
+                .modelFile(sideAlt0Model)
+                .addModel()
+                .condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP)
+                .condition(RedstoneWireBlock.EAST, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.WEST, RedstoneSide.NONE)
                 .end()
                 .part()
                 .modelFile(sideAlt1Model)
@@ -134,10 +146,28 @@ public class BlockStateGenerator extends BlockStateProvider
                 .condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP)
                 .end()
                 .part()
+                .modelFile(sideAlt1Model)
+                .rotationY(270)
+                .addModel()
+                .condition(RedstoneWireBlock.NORTH, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.EAST, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP)
+                .end()
+                .part()
                 .modelFile(side1Model)
                 .rotationY(270)
                 .addModel()
                 .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP)
+                .end()
+                .part()
+                .modelFile(side1Model)
+                .rotationY(270)
+                .addModel()
+                .condition(RedstoneWireBlock.NORTH, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP)
+                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.NONE)
+                .condition(RedstoneWireBlock.WEST, RedstoneSide.NONE)
                 .end()
                 .part()
                 .modelFile(upModel)

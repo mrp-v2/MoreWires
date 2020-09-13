@@ -6,7 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -22,14 +22,14 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         super(Properties.from(Blocks.REDSTONE_WIRE), hueChange, id + "_infiniwire");
     }
 
-    @Override public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)
+    @Override public AdjustedRedstoneItem createBlockItem(Tag<Item> dyeTag)
     {
         InfiniwireItem item = new InfiniwireItem(this, new Item.Properties().group(ItemGroup.REDSTONE), dyeTag);
         item.setRegistryName(this.getRegistryName());
         return item;
     }
 
-    @Override protected void func_235547_a_(World world, BlockPos pos, BlockState state)
+    @Override protected BlockState updateSurroundingRedstone(World world, BlockPos pos, BlockState state)
     {
         if (!doingUpdate)
         {
@@ -37,6 +37,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
             updateChain(world, pos);
             doingUpdate = false;
         }
+        return state;
     }
 
     private void updateNeighbors(World world, HashSet<BlockPos> updatedBlocks)
@@ -118,7 +119,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
     private HashSet<BlockPos> getBlocksInChain(World world, BlockPos pos)
     {
         HashSet<BlockPos> blocks = new HashSet<>();
-        if (world.getBlockState(pos).isIn(this))
+        if (world.getBlockState(pos).getBlock() == this)
         {
             blocks.add(pos);
         }
@@ -131,7 +132,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         for (BlockPos neighborPos : getRelevantWireNeighbors(pos))
         {
             BlockState state = world.getBlockState(neighborPos);
-            if (state.isIn(this))
+            if (state.getBlock() == this)
             {
                 if (foundBlocks.add(neighborPos))
                 {

@@ -5,24 +5,21 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
 import net.minecraft.state.properties.RedstoneSide;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Random;
 
 public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 {
@@ -56,10 +53,9 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         HashMap<Integer, Pair<Integer, Vector3f>> colors = new HashMap<>();
         for (int i = 0; i <= 15; i++)
         {
-            Vector3f RGBColorVecF = RedstoneWireBlock.powerRGB[i];
-            Vector3i RGBColorVecI =
-                    new Vector3i(RGBColorVecF.getX() * 255, RGBColorVecF.getY() * 255, RGBColorVecF.getZ() * 255);
-            float[] hsb = Color.RGBtoHSB(RGBColorVecI.getX(), RGBColorVecI.getY(), RGBColorVecI.getZ(), null);
+            int originalColorInt = RedstoneWireBlock.colorMultiplier(i);
+            float[] hsb = Color.RGBtoHSB((originalColorInt >> 16) & 0xFF, (originalColorInt >> 8) & 0xFF,
+                    originalColorInt & 0xFF, null);
             hsb[0] += hueChange;
             if (hsb[0] > 1)
             {
@@ -78,7 +74,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return blockAndStrengthToColorMap.get(state.getBlock()).get(state.get(POWER)).getLeft();
     }
 
-    public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)
+    public AdjustedRedstoneItem createBlockItem(Tag<Item> dyeTag)
     {
         AdjustedRedstoneItem item =
                 new AdjustedRedstoneItem(this, new Item.Properties().group(ItemGroup.REDSTONE), dyeTag);
@@ -92,72 +88,36 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return item;
     }
 
-    @Override
-    protected RedstoneSide recalculateSide(IBlockReader reader, BlockPos pos, Direction direction,
-            boolean nonNormalCubeAbove)
+    @Override protected RedstoneSide getSide(IBlockReader worldIn, BlockPos pos, Direction face)
     {
-        BlockPos offsetPos = pos.offset(direction);
-        BlockState offsetState = reader.getBlockState(offsetPos);
-        if (nonNormalCubeAbove)
+        BlockPos offsetPos = pos.offset(face);
+        BlockState offsetState = worldIn.getBlockState(offsetPos);
+        BlockPos upPos = pos.up();
+        BlockState upState = worldIn.getBlockState(upPos);
+        if (!upState.isNormalCube(worldIn, upPos))
         {
-            boolean canPlaceOnTopOfOffset = this.canPlaceOnTopOf(reader, offsetPos, offsetState);
+            boolean canPlaceOnTopOfOffset = offsetState.isSolidSide(worldIn, offsetPos, Direction.UP) ||
+                    offsetState.getBlock() == Blocks.HOPPER;
             if (canPlaceOnTopOfOffset &&
-                    this.canThisConnectTo(reader.getBlockState(offsetPos.up()), reader, offsetPos.up(), null))
+                    this.canThisConnectTo(worldIn.getBlockState(offsetPos.up()), worldIn, offsetPos.up(), null))
             {
-                if (offsetState.isSolidSide(reader, offsetPos, direction.getOpposite()))
+                if (offsetState.isCollisionShapeOpaque(worldIn, offsetPos))
                 {
                     return RedstoneSide.UP;
                 }
                 return RedstoneSide.SIDE;
             }
         }
-        return !this.canThisConnectTo(offsetState, reader, offsetPos, direction) &&
-                (offsetState.isNormalCube(reader, offsetPos) ||
-                        !this.canThisConnectTo(reader.getBlockState(offsetPos.down()), reader, offsetPos.down(),
+        return !this.canThisConnectTo(offsetState, worldIn, offsetPos, face) &&
+                (offsetState.isNormalCube(worldIn, offsetPos) ||
+                        !this.canThisConnectTo(worldIn.getBlockState(offsetPos.down()), worldIn, offsetPos.down(),
                                 null)) ? RedstoneSide.NONE : RedstoneSide.SIDE;
-    }
-
-    /**
-     * Checks for a change in signal strength and does updates if there are changes
-     */
-    @Override protected void func_235547_a_(World world, BlockPos pos, BlockState state)
-    {
-        super.func_235547_a_(world, pos, state);
-    }
-
-    @Override public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
-    {
-        int i = stateIn.get(POWER);
-        if (i != 0)
-        {
-            for (Direction direction : Direction.Plane.HORIZONTAL)
-            {
-                RedstoneSide redstoneside = stateIn.get(FACING_PROPERTY_MAP.get(direction));
-                switch (redstoneside)
-                {
-                    case UP:
-                        this.spawnPoweredParticle(worldIn, rand, pos,
-                                blockAndStrengthToColorMap.get(this).get(i).getRight(), direction, Direction.UP, -0.5F,
-                                0.5F);
-                    case SIDE:
-                        this.spawnPoweredParticle(worldIn, rand, pos,
-                                blockAndStrengthToColorMap.get(this).get(i).getRight(), Direction.DOWN, direction, 0.0F,
-                                0.5F);
-                        break;
-                    case NONE:
-                    default:
-                        this.spawnPoweredParticle(worldIn, rand, pos,
-                                blockAndStrengthToColorMap.get(this).get(i).getRight(), Direction.DOWN, direction, 0.0F,
-                                0.3F);
-                }
-            }
-        }
     }
 
     protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
             @Nullable Direction side)
     {
-        if (blockState.isIn(this))
+        if (blockState.getBlock() == this)
         {
             return true;
         }

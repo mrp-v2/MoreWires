@@ -1,0 +1,15 @@
+# signal strength methods:
+func_235547_a -> updateSurroundingRedstone
+getStrongestSignal -> updatePower
+getPower -> maxSignal
+
+# connection methods:
+recalculateSide -> getSide
+canConnectTo -> canConnectTo # yay
+
+# places canConnectTo is used:
+# 1.16.2:
+recalculateSide
+# 1.15.2:
+isPowerSourceAt
+getSide

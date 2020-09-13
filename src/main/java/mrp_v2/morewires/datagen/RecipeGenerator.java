@@ -11,7 +11,7 @@ import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.Tags;
@@ -47,7 +47,7 @@ public class RecipeGenerator extends RecipeProvider
     }
 
     private void makeDyeingWireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
-            ITag<Item> dyeTag)
+            Tag<Item> dyeTag)
     {
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
                 .addIngredient(Ingredient.fromTag(ObjectHolder.WIRES_TAG), 8)
@@ -90,7 +90,7 @@ public class RecipeGenerator extends RecipeProvider
     }
 
     private void makeDyeingInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
-            ITag<Item> dyeTag)
+            Tag<Item> dyeTag)
     {
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
                 .addIngredient(Ingredient.fromTag(ObjectHolder.INFINIWIRES_TAG), 8)
@@ -101,7 +101,7 @@ public class RecipeGenerator extends RecipeProvider
     }
 
     private void makeDyedInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
-            ITag<Item> ingredient)
+            Tag<Item> ingredient)
     {
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
                 .addIngredient(Ingredient.fromTag(ingredient), 8)

@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/redstone_dust_up",
+  "parent": "block/redstone_dust_up",
   "textures": {
     "particle": "morewires:block/infiniwire_dot",
     "line": "morewires:block/infiniwire_line0"

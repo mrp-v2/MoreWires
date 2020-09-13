@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/redstone_dust_side0",
+  "parent": "block/redstone_dust_side0",
   "textures": {
     "line": "morewires:block/infiniwire_line0"
   }

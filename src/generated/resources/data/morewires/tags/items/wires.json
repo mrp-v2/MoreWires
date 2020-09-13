@@ -6,10 +6,9 @@
     "morewires:green_wire",
     "morewires:orange_wire",
     "morewires:pink_wire",
-    "morewires:yellow_wire",
-    {
-      "id": "#forge:dusts/redstone",
-      "required": false
-    }
+    "morewires:yellow_wire"
+  ],
+  "optional": [
+    "#forge:dusts/redstone"
   ]
 }

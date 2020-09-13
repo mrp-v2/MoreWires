@@ -1,9 +1,8 @@
 package mrp_v2.morewires.datagen;
 
 import mrp_v2.morewires.MoreWires;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -18,8 +17,7 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
         {
             generator.addProvider(new LootTableGenerator(generator));
             generator.addProvider(new RecipeGenerator(generator));
-            BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator, MoreWires.ID, existingFileHelper);
-            generator.addProvider(new ItemTagGenerator(generator, blockTagsProvider, existingFileHelper));
+            generator.addProvider(new ItemTagGenerator(generator));
         }
         if (event.includeClient())
         {
