@@ -79,10 +79,6 @@ minecraft {
     }
 }
 
-repositories {
-    mavenLocal()
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
 }
