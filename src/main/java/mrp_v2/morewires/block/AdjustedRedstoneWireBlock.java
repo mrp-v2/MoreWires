@@ -29,6 +29,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     private static final HashMap<AdjustedRedstoneWireBlock, HashMap<Integer, Pair<Integer, Vector3f>>>
             blockAndStrengthToColorMap = new HashMap<>();
     private static final HashSet<Block> redstoneWires = new HashSet<>();
+    protected static boolean globalCanProvidePower = true;
 
     public AdjustedRedstoneWireBlock(float hueChange, String id)
     {
@@ -78,6 +79,16 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return blockAndStrengthToColorMap.get(state.getBlock()).get(state.get(POWER)).getLeft();
     }
 
+    protected boolean isWireBlock(BlockState state)
+    {
+        return isWireBlock(state.getBlock());
+    }
+
+    protected boolean isWireBlock(Block block)
+    {
+        return redstoneWires.contains(block);
+    }
+
     public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)
     {
         AdjustedRedstoneItem item =
@@ -117,12 +128,62 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
                                 null)) ? RedstoneSide.NONE : RedstoneSide.SIDE;
     }
 
-    /**
-     * Checks for a change in signal strength and does updates if there are changes
-     */
-    @Override protected void func_235547_a_(World world, BlockPos pos, BlockState state)
+    @Override protected int getStrongestSignal(World world, BlockPos pos)
     {
-        super.func_235547_a_(world, pos, state);
+        globalCanProvidePower = false;
+        int i = world.getRedstonePowerFromNeighbors(pos);
+        globalCanProvidePower = true;
+        int j = 0;
+        if (i < 15)
+        {
+            for (Direction direction : Direction.Plane.HORIZONTAL)
+            {
+                BlockPos offsetPos = pos.offset(direction);
+                BlockState offsetState = world.getBlockState(offsetPos);
+                j = Math.max(j, this.getPower(offsetState));
+                BlockPos upPos = pos.up();
+                if (offsetState.isNormalCube(world, offsetPos) &&
+                        !world.getBlockState(upPos).isNormalCube(world, upPos))
+                {
+                    j = Math.max(j, this.getPower(world.getBlockState(offsetPos.up())));
+                } else if (!offsetState.isNormalCube(world, offsetPos))
+                {
+                    j = Math.max(j, this.getPower(world.getBlockState(offsetPos.down())));
+                }
+            }
+        }
+        return Math.max(i, j - 1);
+    }
+
+    @Override public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    {
+        return !globalCanProvidePower ? 0 : blockState.getWeakPower(blockAccess, pos, side);
+    }
+
+    @Override public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    {
+        if (globalCanProvidePower && side != Direction.DOWN)
+        {
+            int i = blockState.get(POWER);
+            if (i == 0)
+            {
+                return 0;
+            } else
+            {
+                return side != Direction.UP &&
+                        !this.getUpdatedState(blockAccess, blockState, pos)
+                                .get(FACING_PROPERTY_MAP.get(side.getOpposite()))
+                                .func_235921_b_() ? 0 : i;
+            }
+        } else
+        {
+            return 0;
+        }
+    }
+
+    @Override public boolean canProvidePower(BlockState state)
+    {
+        return globalCanProvidePower;
     }
 
     @Override public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
