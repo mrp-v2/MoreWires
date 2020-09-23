@@ -78,7 +78,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
             return;
         }
         HashSet<HashSet<BlockPos>> neighborChains = new HashSet<>();
-        for (BlockPos neighborPos : getRelevantWireNeighbors(pos))
+        for (BlockPos neighborPos : getConnectedWireNeighbors(worldIn, pos))
         {
             neighborChains.add(getBlocksInChain(worldIn, neighborPos));
         }
@@ -138,35 +138,66 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
     private int getNeighborEquivalency(World world, BlockPos pos)
     {
         int foundPower = -2;
-        for (BlockPos neighborPos : getRelevantWireNeighbors(pos))
+        for (BlockPos neighborPos : getConnectedWireNeighbors(world, pos))
         {
             BlockState neighborState = world.getBlockState(neighborPos);
-            if (neighborState.isIn(this))
+            int neighborPower = neighborState.get(POWER);
+            if (foundPower == -2)
             {
-                int neighborPower = neighborState.get(POWER);
-                if (foundPower == -2)
-                {
-                    foundPower = neighborPower;
-                } else if (neighborPower != foundPower)
-                {
-                    return -1;
-                }
+                foundPower = neighborPower;
+            } else if (neighborPower != foundPower)
+            {
+                return -1;
             }
         }
         return foundPower;
     }
 
-    private HashSet<BlockPos> getRelevantWireNeighbors(BlockPos pos)
+    private HashSet<BlockPos> getConnectedWireNeighbors(World world, BlockPos pos)
     {
-        HashSet<BlockPos> relevantWireNeighbors = getRelevantUpdateNeighbors(pos, false);
+        HashSet<BlockPos> relevantWireNeighbors = new HashSet<>();
         for (Direction horizontalDirection : Direction.Plane.HORIZONTAL)
         {
-            for (Direction verticalDirection : Direction.Plane.VERTICAL)
+            BlockPos neighborPos = pos.offset(horizontalDirection);
+            BlockState neighborState = world.getBlockState(neighborPos);
+            if (neighborState.isNormalCube(world, neighborPos))
             {
-                relevantWireNeighbors.add(pos.offset(horizontalDirection).offset(verticalDirection));
+                BlockPos thisUp = pos.up();
+                if (!world.getBlockState(thisUp).isNormalCube(world, thisUp))
+                {
+                    BlockPos neighborUp = neighborPos.up();
+                    if (world.getBlockState(neighborUp).isIn(this))
+                    {
+                        relevantWireNeighbors.add(neighborUp);
+                    }
+                }
+            } else
+            {
+                BlockPos neighborDown = neighborPos.down();
+                if (neighborState.isIn(this))
+                {
+                    relevantWireNeighbors.add(neighborPos);
+                } else if (world.getBlockState(neighborDown).isIn(this))
+                {
+                    relevantWireNeighbors.add(neighborDown);
+                }
             }
         }
         return relevantWireNeighbors;
+    }
+
+    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos, boolean includeSelf)
+    {
+        HashSet<BlockPos> relevantNeighbors = new HashSet<>();
+        if (includeSelf)
+        {
+            relevantNeighbors.add(pos);
+        }
+        for (Direction direction : Direction.values())
+        {
+            relevantNeighbors.add(pos.offset(direction));
+        }
+        return relevantNeighbors;
     }
 
     private void updateChain(World world, HashSet<BlockPos> chain)
@@ -192,20 +223,6 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         {
             world.notifyNeighborsOfStateChange(updatePos, this);
         }
-    }
-
-    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos, boolean includeSelf)
-    {
-        HashSet<BlockPos> relevantNeighbors = new HashSet<>();
-        if (includeSelf)
-        {
-            relevantNeighbors.add(pos);
-        }
-        for (Direction direction : Direction.values())
-        {
-            relevantNeighbors.add(pos.offset(direction));
-        }
-        return relevantNeighbors;
     }
 
     private HashSet<BlockPos> updateInfiniwireChain(World world, HashSet<BlockPos> chain, int strength)
@@ -262,14 +279,11 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
 
     private void getBlocksInChain(World world, BlockPos pos, HashSet<BlockPos> foundBlocks)
     {
-        for (BlockPos neighborPos : getRelevantWireNeighbors(pos))
+        for (BlockPos neighborPos : getConnectedWireNeighbors(world, pos))
         {
-            if (world.getBlockState(neighborPos).isIn(this))
+            if (foundBlocks.add(neighborPos))
             {
-                if (foundBlocks.add(neighborPos))
-                {
-                    getBlocksInChain(world, neighborPos, foundBlocks);
-                }
+                getBlocksInChain(world, neighborPos, foundBlocks);
             }
         }
     }
