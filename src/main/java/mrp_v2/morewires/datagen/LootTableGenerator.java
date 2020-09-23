@@ -38,7 +38,7 @@ public class LootTableGenerator extends LootTableProvider
     @Override protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker)
     {
         map.forEach(
-                (resourceLocation, lootTable) -> LootTableManager.func_227508_a_(validationtracker, resourceLocation,
+                (resourceLocation, lootTable) -> LootTableManager.validateLootTable(validationtracker, resourceLocation,
                         lootTable));
     }
 
