@@ -37,7 +37,6 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         {
             return;
         }
-        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
         int test = this.getStrongestNonWireSignal(worldIn, pos);
         int neighborTest = this.getNeighborEquivalency(worldIn, pos);
         if (neighborTest == -2)
