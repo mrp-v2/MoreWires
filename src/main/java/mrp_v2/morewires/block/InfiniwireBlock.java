@@ -88,7 +88,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
             {
                 this.updateChain(worldIn, chain);
             }
-        } else if (this.getStrongestNonWireSignal(worldIn, pos) >= state.get(POWER))
+        } else if (state.get(POWER) > 0 && this.getStrongestNonWireSignal(worldIn, pos) == state.get(POWER))
         {
             for (HashSet<BlockPos> chain : neighborChains)
             {
