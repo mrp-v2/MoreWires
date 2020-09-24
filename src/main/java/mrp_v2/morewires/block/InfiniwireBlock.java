@@ -44,6 +44,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
             if (test != 0)
             {
                 worldIn.setBlockState(pos, state.with(POWER, test));
+                this.updateRelevantNeighbors(worldIn, pos);
             }
         } else if (neighborTest == -1)
         {
@@ -51,6 +52,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         } else if (neighborTest >= test)
         {
             worldIn.setBlockState(pos, state.with(POWER, neighborTest));
+            this.updateRelevantNeighbors(worldIn, pos);
         } else
         {
             this.updateChain(worldIn, pos);
@@ -95,6 +97,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
                 this.updateChain(worldIn, chain);
             }
         }
+        this.updateRelevantNeighbors(worldIn, pos);
     }
 
     @Override
@@ -185,13 +188,18 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         return relevantWireNeighbors;
     }
 
-    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos, boolean includeSelf)
+    private void updateRelevantNeighbors(World world, BlockPos pos)
+    {
+        for (BlockPos updatePos : getRelevantUpdateNeighbors(pos))
+        {
+            world.notifyNeighborsOfStateChange(updatePos, this);
+        }
+    }
+
+    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos)
     {
         HashSet<BlockPos> relevantNeighbors = new HashSet<>();
-        if (includeSelf)
-        {
-            relevantNeighbors.add(pos);
-        }
+        relevantNeighbors.add(pos);
         for (Direction direction : Direction.values())
         {
             relevantNeighbors.add(pos.offset(direction));
@@ -216,7 +224,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         HashSet<BlockPos> toUpdate = new HashSet<>();
         for (BlockPos pos : updatedBlocks)
         {
-            toUpdate.addAll(getRelevantUpdateNeighbors(pos, true));
+            toUpdate.addAll(getRelevantUpdateNeighbors(pos));
         }
         for (BlockPos updatePos : toUpdate)
         {
