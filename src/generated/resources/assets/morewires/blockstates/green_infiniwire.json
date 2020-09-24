@@ -13,8 +13,8 @@
     },
     {
       "when": {
-        "north": "up|side",
-        "east": "up|side"
+        "north": "side|up",
+        "east": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"
@@ -22,8 +22,8 @@
     },
     {
       "when": {
-        "south": "up|side",
-        "east": "up|side"
+        "south": "side|up",
+        "east": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"
@@ -31,8 +31,8 @@
     },
     {
       "when": {
-        "south": "up|side",
-        "west": "up|side"
+        "south": "side|up",
+        "west": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"
@@ -40,8 +40,8 @@
     },
     {
       "when": {
-        "north": "up|side",
-        "west": "up|side"
+        "north": "side|up",
+        "west": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"
@@ -49,7 +49,7 @@
     },
     {
       "when": {
-        "north": "up|side"
+        "north": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_side0"
@@ -57,7 +57,7 @@
     },
     {
       "when": {
-        "south": "up|side"
+        "south": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_side_alt0"
@@ -65,7 +65,7 @@
     },
     {
       "when": {
-        "east": "up|side"
+        "east": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_side_alt1",
@@ -74,7 +74,7 @@
     },
     {
       "when": {
-        "west": "up|side"
+        "west": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_side1",
