@@ -78,6 +78,11 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         {
             return;
         }
+        if (state.get(POWER) == 0)
+        {
+            this.updateRelevantNeighbors(worldIn, pos);
+            return;
+        }
         HashSet<HashSet<BlockPos>> neighborChains = new HashSet<>();
         for (BlockPos neighborPos : getConnectedWireNeighbors(worldIn, pos))
         {
@@ -90,7 +95,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
             {
                 this.updateChain(worldIn, chain);
             }
-        } else if (state.get(POWER) > 0 && this.getStrongestNonWireSignal(worldIn, pos) == state.get(POWER))
+        } else if (this.getStrongestNonWireSignal(worldIn, pos) == state.get(POWER))
         {
             for (HashSet<BlockPos> chain : neighborChains)
             {
