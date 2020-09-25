@@ -1,10 +1,7 @@
 package mrp_v2.morewires.block;
 
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.*;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -14,10 +11,12 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -26,6 +25,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     private static final HashMap<AdjustedRedstoneWireBlock, HashMap<Integer, Pair<Integer, Vector3f>>>
             blockAndStrengthToColorMap = new HashMap<>();
     private static final HashSet<Block> redstoneWires = new HashSet<>();
+    protected static boolean globalCanProvidePower = true;
 
     public AdjustedRedstoneWireBlock(float hueChange, String id)
     {
@@ -74,6 +74,16 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return blockAndStrengthToColorMap.get(state.getBlock()).get(state.get(POWER)).getLeft();
     }
 
+    protected boolean isWireBlock(BlockState state)
+    {
+        return isWireBlock(state.getBlock());
+    }
+
+    protected boolean isWireBlock(Block block)
+    {
+        return redstoneWires.contains(block);
+    }
+
     public AdjustedRedstoneItem createBlockItem(Tag<Item> dyeTag)
     {
         AdjustedRedstoneItem item =
@@ -112,6 +122,125 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
                 (offsetState.isNormalCube(worldIn, offsetPos) ||
                         !this.canThisConnectTo(worldIn.getBlockState(offsetPos.down()), worldIn, offsetPos.down(),
                                 null)) ? RedstoneSide.NONE : RedstoneSide.SIDE;
+    }
+
+    @Override protected BlockState updatePower(World worldIn, BlockPos pos, BlockState state)
+    {
+        BlockState blockstate = state;
+        int i = state.get(POWER);
+        globalCanProvidePower = false;
+        int j = worldIn.getRedstonePowerFromNeighbors(pos);
+        globalCanProvidePower = true;
+        int maxSignal = 0;
+        if (j < 15)
+        {
+            for (Direction direction : Direction.Plane.HORIZONTAL)
+            {
+                BlockPos offsetPos = pos.offset(direction);
+                BlockState offsetState = worldIn.getBlockState(offsetPos);
+                maxSignal = this.maxSignal(maxSignal, offsetState);
+                BlockPos upPos = pos.up();
+                if (offsetState.isNormalCube(worldIn, offsetPos) &&
+                        !worldIn.getBlockState(upPos).isNormalCube(worldIn, upPos))
+                {
+                    maxSignal = this.maxSignal(maxSignal, worldIn.getBlockState(offsetPos.up()));
+                } else if (!offsetState.isNormalCube(worldIn, offsetPos))
+                {
+                    maxSignal = this.maxSignal(maxSignal, worldIn.getBlockState(offsetPos.down()));
+                }
+            }
+        }
+        int maxSignalMinus1 = maxSignal - 1;
+        if (j > maxSignalMinus1)
+        {
+            maxSignalMinus1 = j;
+        }
+        if (i != maxSignalMinus1)
+        {
+            state = state.with(POWER, maxSignalMinus1);
+            if (worldIn.getBlockState(pos) == blockstate)
+            {
+                worldIn.setBlockState(pos, state, 2);
+            }
+            this.blocksNeedingUpdate.add(pos);
+            for (Direction direction1 : Direction.values())
+            {
+                this.blocksNeedingUpdate.add(pos.offset(direction1));
+            }
+        }
+        return state;
+    }
+
+    @Override public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    {
+        return !globalCanProvidePower ? 0 : blockState.getWeakPower(blockAccess, pos, side);
+    }
+
+    @Override public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    {
+        if (!globalCanProvidePower)
+        {
+            return 0;
+        } else
+        {
+            int power = blockState.get(POWER);
+            if (power == 0)
+            {
+                return 0;
+            } else if (side == Direction.UP)
+            {
+                return power;
+            } else
+            {
+                EnumSet<Direction> directions = EnumSet.noneOf(Direction.class);
+                for (Direction direction : Direction.Plane.HORIZONTAL)
+                {
+                    if (this.isPowerSourceAt(blockAccess, pos, direction))
+                    {
+                        directions.add(direction);
+                    }
+                }
+                if (side.getAxis().isHorizontal() && directions.isEmpty())
+                {
+                    return power;
+                } else
+                {
+                    return directions.contains(side.getOpposite()) ? power : 0;
+                }
+            }
+        }
+    }
+
+    @Override protected boolean isPowerSourceAt(IBlockReader worldIn, BlockPos pos, Direction side)
+    {
+        BlockPos sidePos = pos.offset(side);
+        BlockState sideState = worldIn.getBlockState(sidePos);
+        boolean sideIsNormalCube = sideState.isNormalCube(worldIn, sidePos);
+        BlockPos upPos = pos.up();
+        boolean upIsNormalCube = worldIn.getBlockState(upPos).isNormalCube(worldIn, upPos);
+        if (!upIsNormalCube &&
+                sideIsNormalCube &&
+                canThisConnectTo(worldIn.getBlockState(sidePos.up()), worldIn, sidePos.up(), null))
+        {
+            return true;
+        } else if (canThisConnectTo(sideState, worldIn, sidePos, side))
+        {
+            return true;
+        } else if (sideState.getBlock() == Blocks.REPEATER &&
+                sideState.get(RedstoneDiodeBlock.POWERED) &&
+                sideState.get(RedstoneDiodeBlock.HORIZONTAL_FACING) == side)
+        {
+            return true;
+        } else
+        {
+            return !sideIsNormalCube &&
+                    canThisConnectTo(worldIn.getBlockState(sidePos.down()), worldIn, sidePos.down(), null);
+        }
+    }
+
+    @Override public boolean canProvidePower(BlockState state)
+    {
+        return globalCanProvidePower;
     }
 
     protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
