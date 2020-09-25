@@ -98,6 +98,29 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return item;
     }
 
+    @Override public int hashCode()
+    {
+        return this.getRegistryName().hashCode();
+    }
+
+    @Override public boolean equals(Object obj)
+    {
+        if (obj == this)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (!(obj instanceof AdjustedRedstoneWireBlock))
+        {
+            return false;
+        }
+        AdjustedRedstoneWireBlock other = (AdjustedRedstoneWireBlock) obj;
+        return this.getRegistryName().equals(other.getRegistryName());
+    }
+
     @Override protected RedstoneSide getSide(IBlockReader worldIn, BlockPos pos, Direction face)
     {
         BlockPos offsetPos = pos.offset(face);
@@ -192,20 +215,22 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
                 return power;
             } else
             {
-                EnumSet<Direction> directions = EnumSet.noneOf(Direction.class);
-                for (Direction direction : Direction.Plane.HORIZONTAL)
+                EnumSet<Direction> connectedDirections = EnumSet.noneOf(Direction.class);
+                for (Direction horizontalDir : Direction.Plane.HORIZONTAL)
                 {
-                    if (this.isPowerSourceAt(blockAccess, pos, direction))
+                    if (this.isPowerSourceAt(blockAccess, pos, horizontalDir))
                     {
-                        directions.add(direction);
+                        connectedDirections.add(horizontalDir);
                     }
                 }
-                if (side.getAxis().isHorizontal() && directions.isEmpty())
+                if (side.getAxis().isHorizontal() && connectedDirections.isEmpty())
                 {
                     return power;
                 } else
                 {
-                    return directions.contains(side.getOpposite()) ? power : 0;
+                    return connectedDirections.contains(side) &&
+                            !connectedDirections.contains(side.rotateYCCW()) &&
+                            !connectedDirections.contains(side.rotateY()) ? power : 0;
                 }
             }
         }
@@ -255,28 +280,5 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
             return false;
         }
         return RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
-    }
-
-    @Override public int hashCode()
-    {
-        return this.getRegistryName().hashCode();
-    }
-
-    @Override public boolean equals(Object obj)
-    {
-        if (obj == this)
-        {
-            return true;
-        }
-        if (obj == null)
-        {
-            return false;
-        }
-        if (!(obj instanceof AdjustedRedstoneWireBlock))
-        {
-            return false;
-        }
-        AdjustedRedstoneWireBlock other = (AdjustedRedstoneWireBlock) obj;
-        return this.getRegistryName().equals(other.getRegistryName());
     }
 }
