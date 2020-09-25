@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.properties.RedstoneSide;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 {
@@ -69,19 +71,19 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return colors;
     }
 
-    public static int getColor(BlockState state)
-    {
-        return blockAndStrengthToColorMap.get(state.getBlock()).get(state.get(POWER)).getLeft();
-    }
-
-    protected boolean isWireBlock(BlockState state)
+    public static boolean isWireBlock(BlockState state)
     {
         return isWireBlock(state.getBlock());
     }
 
-    protected boolean isWireBlock(Block block)
+    public static boolean isWireBlock(Block block)
     {
         return redstoneWires.contains(block);
+    }
+
+    public static int getColor(BlockState state)
+    {
+        return blockAndStrengthToColorMap.get(state.getBlock()).get(state.get(POWER)).getLeft();
     }
 
     public AdjustedRedstoneItem createBlockItem(Tag<Item> dyeTag)
@@ -266,6 +268,20 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     @Override public boolean canProvidePower(BlockState state)
     {
         return globalCanProvidePower;
+    }
+
+    @Override public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
+    {
+        int i = stateIn.get(POWER);
+        Vector3f color = blockAndStrengthToColorMap.get(this).get(i).getRight();
+        if (i != 0)
+        {
+            double d0 = (double) pos.getX() + 0.5D + ((double) rand.nextFloat() - 0.5D) * 0.2D;
+            double d1 = (float) pos.getY() + 0.0625F;
+            double d2 = (double) pos.getZ() + 0.5D + ((double) rand.nextFloat() - 0.5D) * 0.2D;
+            worldIn.addParticle(new RedstoneParticleData(color.getX(), color.getY(), color.getZ(), 1.0F), d0, d1, d2,
+                    0.0D, 0.0D, 0.0D);
+        }
     }
 
     protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
