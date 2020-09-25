@@ -12,7 +12,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class InfiniwireBlock extends AdjustedRedstoneWireBlock
 {
@@ -44,6 +47,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
             if (test != 0)
             {
                 worldIn.setBlockState(pos, state.with(POWER, test));
+                this.updateRelevantNeighbors(worldIn, pos);
             }
         } else if (neighborTest == -1)
         {
@@ -51,6 +55,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         } else if (neighborTest >= test)
         {
             worldIn.setBlockState(pos, state.with(POWER, neighborTest));
+            this.updateRelevantNeighbors(worldIn, pos);
         } else
         {
             this.updateChain(worldIn, pos);
@@ -60,7 +65,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving)
     {
-        if (isMoving || state.getBlock() == newState.getBlock())
+        if (state.getBlock() == newState.getBlock() || isMoving)
         {
             return;
         }
@@ -72,29 +77,34 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         {
             return;
         }
-        if (newState.getBlock() == this || !(state.getBlock() == this))
+        if (newState.getBlock() == this || state.getBlock() != this)
         {
             return;
         }
-        HashSet<HashSet<BlockPos>> neighborChains = new HashSet<>();
-        for (BlockPos neighborPos : getConnectedWireNeighbors(worldIn, pos))
+        if (state.get(POWER) == 0)
+        {
+            this.updateRelevantNeighbors(worldIn, pos);
+            return;
+        }
+        HashSet<HashMap<BlockPos, BlockState>> neighborChains = new HashSet<>();
+        for (BlockPos neighborPos : getConnectedWireNeighbors(worldIn, pos).keySet())
         {
             neighborChains.add(getBlocksInChain(worldIn, neighborPos));
         }
-        neighborChains.remove(new HashSet<BlockPos>());
         if (neighborChains.size() > 1)
         {
-            for (HashSet<BlockPos> chain : neighborChains)
+            for (HashMap<BlockPos, BlockState> chain : neighborChains)
             {
                 this.updateChain(worldIn, chain);
             }
-        } else if (this.getStrongestNonWireSignal(worldIn, pos) >= state.get(POWER))
+        } else if (this.getStrongestNonWireSignal(worldIn, pos) == state.get(POWER))
         {
-            for (HashSet<BlockPos> chain : neighborChains)
+            for (HashMap<BlockPos, BlockState> chain : neighborChains)
             {
                 this.updateChain(worldIn, chain);
             }
         }
+        this.updateRelevantNeighbors(worldIn, pos);
     }
 
     @Override
@@ -136,11 +146,10 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
      */
     private int getNeighborEquivalency(World world, BlockPos pos)
     {
-        int foundPower = -2;
-        for (BlockPos neighborPos : getConnectedWireNeighbors(world, pos))
+        int foundPower = -2, neighborPower;
+        for (Map.Entry<BlockPos, BlockState> neighbor : getConnectedWireNeighbors(world, pos).entrySet())
         {
-            BlockState neighborState = world.getBlockState(neighborPos);
-            int neighborPower = neighborState.get(POWER);
+            neighborPower = neighbor.getValue().get(POWER);
             if (foundPower == -2)
             {
                 foundPower = neighborPower;
@@ -152,59 +161,58 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         return foundPower;
     }
 
-    private HashSet<BlockPos> getConnectedWireNeighbors(World world, BlockPos pos)
+    private HashMap<BlockPos, BlockState> getConnectedWireNeighbors(World world, BlockPos pos)
     {
-        HashSet<BlockPos> relevantWireNeighbors = new HashSet<>();
+        HashMap<BlockPos, BlockState> relevantWireNeighbors = new HashMap<>();
+        BlockPos neighborPos, thisUp, neighborUp, neighborDown;
+        BlockState neighborState, neighborUpState, neighborDownState;
         for (Direction horizontalDirection : Direction.Plane.HORIZONTAL)
         {
-            BlockPos neighborPos = pos.offset(horizontalDirection);
-            BlockState neighborState = world.getBlockState(neighborPos);
+            neighborPos = pos.offset(horizontalDirection);
+            neighborState = world.getBlockState(neighborPos);
             if (neighborState.isNormalCube(world, neighborPos))
             {
-                BlockPos thisUp = pos.up();
+                thisUp = pos.up();
                 if (!world.getBlockState(thisUp).isNormalCube(world, thisUp))
                 {
-                    BlockPos neighborUp = neighborPos.up();
-                    if (world.getBlockState(neighborUp).getBlock() == this)
+                    neighborUp = neighborPos.up();
+                    neighborUpState = world.getBlockState(neighborUp);
+                    if (neighborUpState.getBlock() == this)
                     {
-                        relevantWireNeighbors.add(neighborUp);
+                        relevantWireNeighbors.put(neighborUp, neighborUpState);
                     }
                 }
             } else
             {
-                BlockPos neighborDown = neighborPos.down();
+                neighborDown = neighborPos.down();
                 if (neighborState.getBlock() == this)
                 {
-                    relevantWireNeighbors.add(neighborPos);
-                } else if (world.getBlockState(neighborDown).getBlock() == this)
+                    relevantWireNeighbors.put(neighborPos, neighborState);
+                } else
                 {
-                    relevantWireNeighbors.add(neighborDown);
+                    neighborDownState = world.getBlockState(neighborDown);
+                    if (neighborDownState.getBlock() == this)
+                    {
+                        relevantWireNeighbors.put(neighborDown, neighborDownState);
+                    }
                 }
             }
         }
         return relevantWireNeighbors;
     }
 
-    private void updateNeighbors(World world, HashSet<BlockPos> updatedBlocks)
+    private void updateRelevantNeighbors(World world, BlockPos pos)
     {
-        HashSet<BlockPos> toUpdate = new HashSet<>();
-        for (BlockPos pos : updatedBlocks)
-        {
-            toUpdate.addAll(getRelevantUpdateNeighbors(pos, true));
-        }
-        for (BlockPos updatePos : toUpdate)
+        for (BlockPos updatePos : getRelevantUpdateNeighbors(pos))
         {
             world.notifyNeighborsOfStateChange(updatePos, this);
         }
     }
 
-    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos, boolean includeSelf)
+    private HashSet<BlockPos> getRelevantUpdateNeighbors(BlockPos pos)
     {
         HashSet<BlockPos> relevantNeighbors = new HashSet<>();
-        if (includeSelf)
-        {
-            relevantNeighbors.add(pos);
-        }
+        relevantNeighbors.add(pos);
         for (Direction direction : Direction.values())
         {
             relevantNeighbors.add(pos.offset(direction));
@@ -212,50 +220,52 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         return relevantNeighbors;
     }
 
-    private HashSet<BlockPos> updateInfiniwireChain(World world, HashSet<BlockPos> chain, int strength)
-    {
-        HashSet<BlockPos> updatedBlocks = new HashSet<>();
-        for (BlockPos pos : chain)
-        {
-            BlockState state = world.getBlockState(pos);
-            if (strength != state.get(POWER))
-            {
-                world.setBlockState(pos, state.with(POWER, strength), 2);
-                updatedBlocks.add(pos);
-            }
-        }
-        return updatedBlocks;
-    }
-
-    private void updateChain(World world, BlockPos pos)
-    {
-        if (doingUpdate)
-        {
-            return;
-        }
-        HashSet<BlockPos> chain = getBlocksInChain(world, pos);
-        this.updateChain(world, chain);
-    }
-
-    private void updateChain(World world, HashSet<BlockPos> chain)
+    private void updateChain(World world, HashMap<BlockPos, BlockState> chain)
     {
         if (this.doingUpdate)
         {
             return;
         }
-        int newStrength = getStrongestNonWireSignal(world, chain);
+        int newStrength = getStrongestNonWireSignal(world, chain.keySet());
         this.doingUpdate = true;
         updateNeighbors(world, updateInfiniwireChain(world, chain, newStrength));
         this.doingUpdate = false;
     }
 
-    private int getStrongestNonWireSignal(World world, HashSet<BlockPos> chain)
+    private void updateNeighbors(World world, HashSet<BlockPos> updatedBlocks)
     {
-        int strongest = 0;
+        HashSet<BlockPos> toUpdate = new HashSet<>();
+        for (BlockPos pos : updatedBlocks)
+        {
+            toUpdate.addAll(getRelevantUpdateNeighbors(pos));
+        }
+        for (BlockPos updatePos : toUpdate)
+        {
+            world.notifyNeighborsOfStateChange(updatePos, this);
+        }
+    }
+
+    private HashSet<BlockPos> updateInfiniwireChain(World world, HashMap<BlockPos, BlockState> chain, int strength)
+    {
+        HashSet<BlockPos> updatedBlocks = new HashSet<>();
+        for (Map.Entry<BlockPos, BlockState> entry : chain.entrySet())
+        {
+            if (strength != entry.getValue().get(POWER))
+            {
+                world.setBlockState(entry.getKey(), entry.getValue().with(POWER, strength), 2);
+                updatedBlocks.add(entry.getKey());
+            }
+        }
+        return updatedBlocks;
+    }
+
+    private int getStrongestNonWireSignal(World world, Set<BlockPos> chain)
+    {
+        int strongest = 0, test;
         globalCanProvidePower = false;
         for (BlockPos pos : chain)
         {
-            int test = world.getRedstonePowerFromNeighbors(pos);
+            test = world.getRedstonePowerFromNeighbors(pos);
             if (test > strongest)
             {
                 strongest = test;
@@ -265,24 +275,35 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         return strongest;
     }
 
-    private HashSet<BlockPos> getBlocksInChain(World world, BlockPos pos)
+    private void updateChain(World world, BlockPos pos)
     {
-        HashSet<BlockPos> blocks = new HashSet<>();
-        if (world.getBlockState(pos).getBlock() == this)
+        if (doingUpdate)
         {
-            blocks.add(pos);
+            return;
+        }
+        HashMap<BlockPos, BlockState> chain = getBlocksInChain(world, pos);
+        this.updateChain(world, chain);
+    }
+
+    private HashMap<BlockPos, BlockState> getBlocksInChain(World world, BlockPos pos)
+    {
+        HashMap<BlockPos, BlockState> blocks = new HashMap<>();
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() == this)
+        {
+            blocks.put(pos, state);
             getBlocksInChain(world, pos, blocks);
         }
         return blocks;
     }
 
-    private void getBlocksInChain(World world, BlockPos pos, HashSet<BlockPos> foundBlocks)
+    private void getBlocksInChain(World world, BlockPos pos, HashMap<BlockPos, BlockState> foundBlocks)
     {
-        for (BlockPos neighborPos : getConnectedWireNeighbors(world, pos))
+        for (Map.Entry<BlockPos, BlockState> neighbor : getConnectedWireNeighbors(world, pos).entrySet())
         {
-            if (foundBlocks.add(neighborPos))
+            if (foundBlocks.put(neighbor.getKey(), neighbor.getValue()) == null)
             {
-                getBlocksInChain(world, neighborPos, foundBlocks);
+                getBlocksInChain(world, neighbor.getKey(), foundBlocks);
             }
         }
     }

@@ -26,12 +26,6 @@ group = "${author}.${archivesBaseName}"
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' +
         System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
-repositories {
-    maven {
-        url 'https://www.dogforce-games.com/maven/'
-    }
-}
-
 sourceSets {
     main {
         resources {
