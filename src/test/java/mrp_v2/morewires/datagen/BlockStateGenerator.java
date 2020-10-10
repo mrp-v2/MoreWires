@@ -20,9 +20,9 @@ public class BlockStateGenerator extends BlockStateProvider
 {
     private final ExistingFileHelper existingFileHelper;
 
-    public BlockStateGenerator(DataGenerator gen, ExistingFileHelper exFileHelper)
+    public BlockStateGenerator(DataGenerator gen, String modId, ExistingFileHelper exFileHelper)
     {
-        super(gen, MoreWires.ID, exFileHelper);
+        super(gen, modId, exFileHelper);
         this.existingFileHelper = exFileHelper;
     }
 
@@ -41,11 +41,6 @@ public class BlockStateGenerator extends BlockStateProvider
         registerModel("up", particleDot, line0);
         registerWireStates();
         registerInfiniwireStates();
-    }
-
-    @Override public String getName()
-    {
-        return super.getName() + ": " + MoreWires.ID;
     }
 
     @SafeVarargs private final void registerModel(String suffix, Pair<String, String>... textures)

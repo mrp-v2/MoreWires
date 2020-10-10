@@ -66,15 +66,21 @@ minecraft {
                     sourceSets.main.output.resourcesDir
             mods {
                 morewires {
-                    source sourceSets.main
+                    sources sourceSets.main, sourceSets.test
                 }
             }
         }
     }
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
+
+    compile fg.deobf("mrp_v2.mrp_v2datagenlibrary:MRP_V2DataGenLibrary:${mcVersion}-0.1.0.0")
 }
 
 jar {

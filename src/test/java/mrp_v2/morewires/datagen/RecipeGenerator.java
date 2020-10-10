@@ -1,6 +1,5 @@
 package mrp_v2.morewires.datagen;
 
-import mrp_v2.morewires.MoreWires;
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.morewires.util.Util;
@@ -13,29 +12,23 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
-public class RecipeGenerator extends RecipeProvider
+public class RecipeGenerator extends mrp_v2.mrp_v2datagenlibrary.datagen.RecipeGenerator
 {
     public static final String DYEING_ID = "dyeing";
 
-    public RecipeGenerator(DataGenerator generatorIn)
+    public RecipeGenerator(DataGenerator generatorIn, String modId)
     {
-        super(generatorIn);
+        super(generatorIn, modId);
     }
 
     @Override protected void registerRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
     {
         makeWireRecipes(iFinishedRecipeConsumer);
         makeInfiniwireRecipes(iFinishedRecipeConsumer);
-    }
-
-    @Override public String getName()
-    {
-        return super.getName() + ": " + MoreWires.ID;
     }
 
     private void makeWireRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
@@ -52,14 +45,9 @@ public class RecipeGenerator extends RecipeProvider
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
                 .addIngredient(Ingredient.fromTag(ObjectHolder.WIRES_TAG), 8)
                 .addIngredient(dyeTag)
-                .addCriterion("has_wire", hasItem(ObjectHolder.WIRES_TAG))
+                .addCriterion("has_wire", RecipeProvider.hasItem(ObjectHolder.WIRES_TAG))
                 .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, getID(result)));
-    }
-
-    private static String getID(IItemProvider item)
-    {
-        return Registry.ITEM.getKey(item.asItem()).getPath();
     }
 
     private void makeInfiniwireRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
@@ -84,7 +72,7 @@ public class RecipeGenerator extends RecipeProvider
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
                 .addIngredient(ingredient, 8)
                 .addIngredient(Tags.Items.INGOTS_IRON)
-                .addCriterion("has_wire", hasItem(ingredient))
+                .addCriterion("has_wire", RecipeProvider.hasItem(ingredient))
                 .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer);
     }
@@ -95,7 +83,7 @@ public class RecipeGenerator extends RecipeProvider
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
                 .addIngredient(Ingredient.fromTag(ObjectHolder.INFINIWIRES_TAG), 8)
                 .addIngredient(dyeTag)
-                .addCriterion("has_infiniwire", hasItem(ObjectHolder.INFINIWIRES_TAG))
+                .addCriterion("has_infiniwire", RecipeProvider.hasItem(ObjectHolder.INFINIWIRES_TAG))
                 .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, getID(result)));
     }
@@ -106,7 +94,7 @@ public class RecipeGenerator extends RecipeProvider
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
                 .addIngredient(Ingredient.fromTag(ingredient), 8)
                 .addIngredient(Tags.Items.INGOTS_IRON)
-                .addCriterion("has_wire", hasItem(ingredient))
+                .addCriterion("has_wire", RecipeProvider.hasItem(ingredient))
                 .setGroup(result.asItem().getRegistryName().getPath())
                 .build(iFinishedRecipeConsumer);
     }

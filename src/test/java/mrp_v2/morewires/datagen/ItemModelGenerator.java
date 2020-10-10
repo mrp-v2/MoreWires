@@ -1,6 +1,5 @@
 package mrp_v2.morewires.datagen;
 
-import mrp_v2.morewires.MoreWires;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.morewires.util.Util;
 import net.minecraft.data.DataGenerator;
@@ -11,9 +10,9 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ItemModelGenerator extends ItemModelProvider
 {
-    public ItemModelGenerator(DataGenerator generator, ExistingFileHelper existingFileHelper)
+    public ItemModelGenerator(DataGenerator generator, String modId, ExistingFileHelper existingFileHelper)
     {
-        super(generator, MoreWires.ID, existingFileHelper);
+        super(generator, modId, existingFileHelper);
     }
 
     @Override protected void registerModels()
