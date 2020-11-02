@@ -21,6 +21,7 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
         {
             helper.addBlockStateProvider(BlockStateGenerator::new);
             helper.addItemModelProvider(ItemModelGenerator::new);
+            helper.addLanguageProvider(EN_USTranslationGenerator::new);
         }
     }
 }
