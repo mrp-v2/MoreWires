@@ -2,10 +2,10 @@
   "multipart": [
     {
       "when": {
-        "west": "none",
+        "north": "none",
         "east": "none",
-        "south": "none",
-        "north": "none"
+        "west": "none",
+        "south": "none"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_dot"
@@ -13,8 +13,8 @@
     },
     {
       "when": {
-        "east": "up|side",
-        "north": "up|side"
+        "north": "side|up",
+        "east": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_dot"
@@ -22,8 +22,8 @@
     },
     {
       "when": {
-        "east": "up|side",
-        "south": "up|side"
+        "east": "side|up",
+        "south": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_dot"
@@ -31,8 +31,8 @@
     },
     {
       "when": {
-        "west": "up|side",
-        "south": "up|side"
+        "west": "side|up",
+        "south": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_dot"
@@ -40,8 +40,8 @@
     },
     {
       "when": {
-        "west": "up|side",
-        "north": "up|side"
+        "north": "side|up",
+        "west": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_dot"
@@ -49,7 +49,7 @@
     },
     {
       "when": {
-        "north": "up|side"
+        "north": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_side0"
@@ -57,7 +57,7 @@
     },
     {
       "when": {
-        "south": "up|side"
+        "south": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_side_alt0"
@@ -65,7 +65,7 @@
     },
     {
       "when": {
-        "east": "up|side"
+        "east": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_side_alt1",
@@ -74,7 +74,7 @@
     },
     {
       "when": {
-        "west": "up|side"
+        "west": "side|up"
       },
       "apply": {
         "model": "minecraft:block/redstone_dust_side1",

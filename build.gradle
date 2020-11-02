@@ -17,8 +17,7 @@ def modId = capitalizedModId.toLowerCase()
 def forgeVersion = "${forgeMajor}.${forgeMinor}.${forgePatch}"
 def homepageURL = "https://www.curseforge.com/minecraft/mc-mods/${modDisplayName.replace(' ', '-').toLowerCase()}"
 def issuesURL = "${homepageURL}/issues"
-def updateURL = "https://raw.githubusercontent.com/mrp-v2/ModUpdateFiles/master/${capitalizedModId}.json"
-def logo = "${capitalizedModId}Logo.png"
+def updateURL = "https://raw.githubusercontent.com/mrp-v2/${capitalizedModId}/master/update.json"
 version = "${mcVersion}-${modMajorMod}.${modMajorAPI}.${modMinor}.${modPatch}"
 archivesBaseName = modId
 group = "${author}.${archivesBaseName}"
@@ -40,7 +39,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
                 morewires {
@@ -50,7 +49,7 @@ minecraft {
         }
         server {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
                 morewires {
@@ -60,13 +59,13 @@ minecraft {
         }
         data {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             args '--mod', modId, '--all', '--output', file('src/generated/resources/'), '--existing',
                     sourceSets.main.output.resourcesDir
             mods {
                 morewires {
-                    sources sourceSets.main, sourceSets.test
+                    source sourceSets.main
                 }
             }
         }
@@ -79,8 +78,7 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
-
-    compile fg.deobf("mrp_v2.mrp_v2datagenlibrary:MRP_V2DataGenLibrary:${mcVersion}-0.1.0.0")
+    compile fg.deobf("mrp_v2.mrp_v2datagenlibrary:mrp_v2DataGenLibrary:${mcVersion}-${dglAPI}.${dglPatch}")
 }
 
 jar {
@@ -109,19 +107,16 @@ processResources {
     inputs.property 'author', author
     inputs.property 'updateURL', updateURL
     inputs.property 'issuesURL', issuesURL
-    inputs.property 'logo', logo
+    inputs.property 'dglAPI', dglAPI
     from(sourceSets.main.resources.srcDirs) {
-        include 'assets/morewires/lang/*'
-        include 'META-INF/mods.toml'
-        include 'pack.mcmeta'
+        include '**/*'
+        exclude '**/*.png'
         expand 'version': project.version, 'modId': modId, 'forgeMajor': forgeMajor, 'mcVersion': mcVersion,
                 'homepageURL': homepageURL, 'modDisplayName': modDisplayName, 'capitalizedModId': capitalizedModId,
                 'modDescription': modDescription, 'author': author, 'updateURL': updateURL, 'issuesURL': issuesURL,
-                'logo': logo
+                'dglAPI': dglAPI
     }
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'assets/morewires/lang/*'
-        exclude 'META-INF/mods.toml'
-        exclude 'pack.mcmeta'
+        exclude '**/*'
     }
 }
