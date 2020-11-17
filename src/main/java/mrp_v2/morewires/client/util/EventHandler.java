@@ -22,8 +22,10 @@ public class EventHandler
     @SubscribeEvent public static void clientSetup(final FMLClientSetupEvent event)
     {
         Consumer<Block> renderLayerSetter = (block) -> RenderTypeLookup.setRenderLayer(block, RenderType.getCutout());
-        Util.doOperationOn(renderLayerSetter, ObjectHolder.INFINIWIRE_BLOCKS);
-        Util.doOperationOn(renderLayerSetter, ObjectHolder.WIRE_BLOCKS);
+        Util.doOperationOn((blockObject) -> renderLayerSetter.accept(blockObject.get()),
+                ObjectHolder.INFINIWIRE_BLOCKS.values());
+        Util.doOperationOn((blockObject) -> renderLayerSetter.accept(blockObject.get()),
+                ObjectHolder.WIRE_BLOCKS.values());
     }
 
     @SubscribeEvent public static void registerBlockColors(final ColorHandlerEvent.Block event)
@@ -31,7 +33,9 @@ public class EventHandler
         IBlockColor colorer =
                 (blockState, iBlockDisplayReader, blockPos, tint) -> AdjustedRedstoneWireBlock.getColor(blockState);
         Consumer<Block> colorRegisterer = (block) -> event.getBlockColors().register(colorer, block);
-        Util.doOperationOn(colorRegisterer, ObjectHolder.INFINIWIRE_BLOCKS);
-        Util.doOperationOn(colorRegisterer, ObjectHolder.WIRE_BLOCKS);
+        Util.doOperationOn((blockObject) -> colorRegisterer.accept(blockObject.get()),
+                ObjectHolder.INFINIWIRE_BLOCKS.values());
+        Util.doOperationOn((blockObject) -> colorRegisterer.accept(blockObject.get()),
+                ObjectHolder.WIRE_BLOCKS.values());
     }
 }

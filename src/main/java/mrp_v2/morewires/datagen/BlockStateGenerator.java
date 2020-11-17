@@ -14,6 +14,7 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BlockStateGenerator extends BlockStateProvider
@@ -57,17 +58,17 @@ public class BlockStateGenerator extends BlockStateProvider
 
     private void registerWireStates()
     {
-        for (AdjustedRedstoneWireBlock block : ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE)
+        for (RegistryObject<AdjustedRedstoneWireBlock> block : ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE.values())
         {
-            registerWireBasedStates(block, "redstone_dust", true);
+            registerWireBasedStates(block.get(), "redstone_dust", true);
         }
     }
 
     private void registerInfiniwireStates()
     {
-        for (InfiniwireBlock block : ObjectHolder.INFINIWIRE_BLOCKS)
+        for (RegistryObject<InfiniwireBlock> block : ObjectHolder.INFINIWIRE_BLOCKS.values())
         {
-            registerWireBasedStates(block, "infiniwire", false);
+            registerWireBasedStates(block.get(), "infiniwire", false);
         }
     }
 

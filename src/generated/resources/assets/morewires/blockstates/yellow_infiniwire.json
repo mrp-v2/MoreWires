@@ -2,10 +2,10 @@
   "multipart": [
     {
       "when": {
+        "south": "none",
         "north": "none",
         "east": "none",
-        "west": "none",
-        "south": "none"
+        "west": "none"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"
@@ -22,8 +22,8 @@
     },
     {
       "when": {
-        "east": "side|up",
-        "south": "side|up"
+        "south": "side|up",
+        "east": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"
@@ -31,8 +31,8 @@
     },
     {
       "when": {
-        "west": "side|up",
-        "south": "side|up"
+        "south": "side|up",
+        "west": "side|up"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"

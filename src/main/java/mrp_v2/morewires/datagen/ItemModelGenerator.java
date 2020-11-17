@@ -1,5 +1,7 @@
 package mrp_v2.morewires.datagen;
 
+import mrp_v2.morewires.item.AdjustedRedstoneItem;
+import mrp_v2.morewires.item.InfiniwireItem;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.morewires.util.Util;
 import net.minecraft.data.DataGenerator;
@@ -7,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.RegistryObject;
 
 public class ItemModelGenerator extends ItemModelProvider
 {
@@ -17,13 +20,13 @@ public class ItemModelGenerator extends ItemModelProvider
 
     @Override protected void registerModels()
     {
-        for (Item item : ObjectHolder.WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE)
+        for (RegistryObject<AdjustedRedstoneItem> item : ObjectHolder.WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE.values())
         {
-            registerWireItemModel(item);
+            registerWireItemModel(item.get());
         }
-        for (Item item : ObjectHolder.INFINIWIRE_BLOCK_ITEMS)
+        for (RegistryObject<InfiniwireItem> item : ObjectHolder.INFINIWIRE_BLOCK_ITEMS.values())
         {
-            registerInfiniwireItemModel(item);
+            registerInfiniwireItemModel(item.get());
         }
     }
 

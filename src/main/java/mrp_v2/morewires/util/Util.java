@@ -5,11 +5,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
 public class Util
 {
-    public static <T> void doOperationOn(Consumer<T> operation, T[] items)
+    public static <T> void doOperationOn(Consumer<T> operation, Collection<T> items)
     {
         for (T item : items)
         {

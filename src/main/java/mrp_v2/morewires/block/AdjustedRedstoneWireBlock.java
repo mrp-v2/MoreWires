@@ -7,7 +7,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Items;
 import net.minecraft.state.properties.RedstoneSide;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
@@ -31,15 +30,14 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     private static final HashSet<Block> redstoneWires = new HashSet<>();
     protected static boolean globalCanProvidePower = true;
 
-    public AdjustedRedstoneWireBlock(float hueChange, String id)
+    public AdjustedRedstoneWireBlock(float hueChange)
     {
-        this(Properties.from(Blocks.REDSTONE_WIRE), hueChange, id + "_wire");
+        this(Properties.from(Blocks.REDSTONE_WIRE), hueChange);
     }
 
-    protected AdjustedRedstoneWireBlock(Properties properties, float hueChange, String id)
+    protected AdjustedRedstoneWireBlock(Properties properties, float hueChange)
     {
         super(properties);
-        this.setRegistryName(id);
         redstoneWires.add(this);
         blockAndStrengthToColorMap.put(this, calculateColors(hueChange));
     }
@@ -91,16 +89,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 
     public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)
     {
-        AdjustedRedstoneItem item =
-                new AdjustedRedstoneItem(this, new Item.Properties().group(ItemGroup.REDSTONE), dyeTag);
-        if (this.getRegistryName().equals(Blocks.REDSTONE_WIRE.getRegistryName()))
-        {
-            item.setRegistryName(Items.REDSTONE.getRegistryName());
-        } else
-        {
-            item.setRegistryName(this.getRegistryName());
-        }
-        return item;
+        return new AdjustedRedstoneItem(this, new Item.Properties().group(ItemGroup.REDSTONE), dyeTag);
     }
 
     @Override
@@ -227,28 +216,5 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
             return false;
         }
         return RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
-    }
-
-    @Override public int hashCode()
-    {
-        return this.getRegistryName().hashCode();
-    }
-
-    @Override public boolean equals(Object obj)
-    {
-        if (obj == this)
-        {
-            return true;
-        }
-        if (obj == null)
-        {
-            return false;
-        }
-        if (!(obj instanceof AdjustedRedstoneWireBlock))
-        {
-            return false;
-        }
-        AdjustedRedstoneWireBlock other = (AdjustedRedstoneWireBlock) obj;
-        return this.getRegistryName().equals(other.getRegistryName());
     }
 }

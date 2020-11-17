@@ -1,9 +1,12 @@
 package mrp_v2.morewires.datagen;
 
+import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
+import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.mrp_v2datagenlibrary.datagen.TranslationGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.fml.RegistryObject;
 
 public class EN_USTranslationGenerator extends TranslationGenerator
 {
@@ -14,13 +17,13 @@ public class EN_USTranslationGenerator extends TranslationGenerator
 
     @Override protected void addTranslations()
     {
-        for (Block block : ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE)
+        for (RegistryObject<AdjustedRedstoneWireBlock> block : ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE.values())
         {
-            addWireTranslation(block);
+            addWireTranslation(block.get());
         }
-        for (Block block : ObjectHolder.INFINIWIRE_BLOCKS)
+        for (RegistryObject<InfiniwireBlock> block : ObjectHolder.INFINIWIRE_BLOCKS.values())
         {
-            addWireTranslation(block);
+            addWireTranslation(block.get());
         }
     }
 

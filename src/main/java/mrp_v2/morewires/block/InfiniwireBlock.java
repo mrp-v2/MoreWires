@@ -1,6 +1,5 @@
 package mrp_v2.morewires.block;
 
-import mrp_v2.morewires.item.AdjustedRedstoneItem;
 import mrp_v2.morewires.item.InfiniwireItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,16 +20,14 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
 {
     private boolean doingUpdate = false;
 
-    public InfiniwireBlock(float hueChange, String id)
+    public InfiniwireBlock(float hueChange)
     {
-        super(Properties.from(Blocks.REDSTONE_WIRE), hueChange, id + "_infiniwire");
+        super(Properties.from(Blocks.REDSTONE_WIRE), hueChange);
     }
 
-    @Override public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)
+    @Override public InfiniwireItem createBlockItem(ITag<Item> dyeTag)
     {
-        InfiniwireItem item = new InfiniwireItem(this, new Item.Properties().group(ItemGroup.REDSTONE), dyeTag);
-        item.setRegistryName(this.getRegistryName());
-        return item;
+        return new InfiniwireItem(this, new Item.Properties().group(ItemGroup.REDSTONE), dyeTag);
     }
 
     @Override

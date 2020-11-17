@@ -8,8 +8,10 @@ public class LootTables extends mrp_v2.mrp_v2datagenlibrary.datagen.LootTables
 {
     public LootTables()
     {
-        Util.doOperationOn(this::dropSelfLootTable, ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE);
-        Util.doOperationOn(this::dropSelfLootTable, ObjectHolder.INFINIWIRE_BLOCKS);
+        Util.doOperationOn((blockObject) -> this.dropSelfLootTable(blockObject.get()),
+                ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE.values());
+        Util.doOperationOn((blockObject) -> this.dropSelfLootTable(blockObject.get()),
+                ObjectHolder.INFINIWIRE_BLOCKS.values());
     }
 
     private void dropSelfLootTable(Block block)
