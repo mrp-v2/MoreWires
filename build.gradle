@@ -15,9 +15,11 @@ apply plugin: 'net.minecraftforge.gradle'
 def capitalizedModId = modDisplayName.replace(' ', '')
 def modId = capitalizedModId.toLowerCase()
 def forgeVersion = "${forgeMajor}.${forgeMinor}.${forgePatch}"
+def mcNextVersion = "1." + ((mcVersion.split("\\.")[1] as int) + 1)
 def homepageURL = "https://www.curseforge.com/minecraft/mc-mods/${modDisplayName.replace(' ', '-').toLowerCase()}"
 def issuesURL = "${homepageURL}/issues"
 def updateURL = "https://raw.githubusercontent.com/mrp-v2/${capitalizedModId}/master/update.json"
+def dglNextAPI = dglAPI.split("\\.")[0] + "." + ((dglAPI.split("\\.")[1] as int) + 1)
 version = "${mcVersion}-${modMajorMod}.${modMajorAPI}.${modMinor}.${modPatch}"
 archivesBaseName = modId
 group = "${author}.${archivesBaseName}"
@@ -100,6 +102,7 @@ processResources {
     inputs.property 'modId', modId
     inputs.property 'forgeMajor', forgeMajor
     inputs.property 'mcVersion', mcVersion
+    inputs.property 'mcNextVersion', mcNextVersion
     inputs.property 'homepageURL', homepageURL
     inputs.property 'modDisplayName', modDisplayName
     inputs.property 'capitalizedModId', capitalizedModId
@@ -108,13 +111,14 @@ processResources {
     inputs.property 'updateURL', updateURL
     inputs.property 'issuesURL', issuesURL
     inputs.property 'dglAPI', dglAPI
+    inputs.property 'dglNextAPI', dglNextAPI
     from(sourceSets.main.resources.srcDirs) {
         include '**/*'
         exclude '**/*.png'
         expand 'version': project.version, 'modId': modId, 'forgeMajor': forgeMajor, 'mcVersion': mcVersion,
-                'homepageURL': homepageURL, 'modDisplayName': modDisplayName, 'capitalizedModId': capitalizedModId,
-                'modDescription': modDescription, 'author': author, 'updateURL': updateURL, 'issuesURL': issuesURL,
-                'dglAPI': dglAPI
+                'mcNextVersion': mcNextVersion, 'homepageURL': homepageURL, 'modDisplayName': modDisplayName,
+                'capitalizedModId': capitalizedModId, 'modDescription': modDescription, 'author': author,
+                'updateURL': updateURL, 'issuesURL': issuesURL, 'dglAPI': dglAPI, 'dglNextAPI': dglNextAPI
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*'

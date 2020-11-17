@@ -20,12 +20,12 @@ license="All rights reserved"
 [[dependencies.${modId}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${mcVersion}]"
+    versionRange="[${mcVersion},${mcNextVersion})"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${modId}]]
     modId="mrp_v2datagenlibrary"
     mandatory=true
-    versionRange="[${mcVersion}-${dglAPI},)"
+    versionRange="[${mcVersion}-${dglAPI},${mcVersion}-${dglNextAPI})"
     ordering="NONE"
     side="BOTH"
