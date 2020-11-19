@@ -34,12 +34,13 @@ def homepageURL = "https://www.curseforge.com/minecraft/mc-mods/${modDisplayName
 def issuesURL = "${homepageURL}/issues"
 def updateURL = "https://raw.githubusercontent.com/mrp-v2/${capitalizedModId}/master/update.json"
 def dglNextAPI = dglAPI.split("\\.")[0] + "." + ((dglAPI.split("\\.")[1] as int) + 1)
-version = "${mcVersion}-${modMajorMod}.${modMajorAPI}.${modMinor}.${modPatch}"
 archivesBaseName = modId
 group = "${author}.${archivesBaseName}"
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' +
         System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+println('Minecraft: ' + mcVersion + ' Forge: ' + forgeVersion + ' Mappings: ' + mappingsChannel + '-' + mappingsVersion +
+        ' Mod: ' + version)
 
 sourceSets {
     main {
