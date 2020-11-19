@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 buildscript {
     repositories {
         maven {
@@ -12,9 +14,21 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+def forgeVersions = new File('build/tmp/forge-versions.json')
+new URL('https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json').
+        withInputStream { stream ->
+            forgeVersions.withOutputStream {
+                it << stream
+            }
+        }
+if (forgeVersion == "latest" || forgeVersion == "recommended")
+{
+    forgeVersion = new JsonSlurper().parseText(forgeVersions.text).get("promos").get(mcVersion + "-" + forgeVersion)
+    assert forgeVersion != null
+}
 def capitalizedModId = modDisplayName.replace(' ', '')
 def modId = capitalizedModId.toLowerCase()
-def forgeVersion = "${forgeMajor}.${forgeMinor}.${forgePatch}"
+def forgeMajor = forgeVersion.split("\\.")[0]
 def mcNextVersion = "1." + ((mcVersion.split("\\.")[1] as int) + 1)
 def homepageURL = "https://www.curseforge.com/minecraft/mc-mods/${modDisplayName.replace(' ', '-').toLowerCase()}"
 def issuesURL = "${homepageURL}/issues"
