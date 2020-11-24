@@ -20,7 +20,7 @@ license="All rights reserved"
 [[dependencies.${modId}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${mcVersion},${mcNextVersion})"
+    versionRange="[${mcVersion}]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${modId}]]
