@@ -16,14 +16,12 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-plugins {
-    id 'org.ajoberstar.grgit' version '3.1.1'
-}
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 String mcVersion = version.split('-')[0]
 if (forgeVersion == 'latest' || forgeVersion == 'recommended')
 {
+    println 'Grabbing ' + forgeVersion + ' forge version for MC ' + mcVersion
     forgeVersion = new JsonSlurper().
             parse(new URL('https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json')).
             get('promos').get(mcVersion + '-' + forgeVersion)
@@ -150,27 +148,28 @@ processResources {
 }
 
 task regenerateUpdateJson {
-    String updateJsonLocation = './update.json'
-    String raw = grgit.describe(longDescr: true, tags: true)
-    List dataList = (raw == null ? '0.0.0-unknown' : grgit.describe(longDescr: true, tags: true)).split('-') as List
-    String hash = dataList.remove(dataList.size() - 1)
-    String commitsSinceTag = dataList.remove(dataList.size() - 1)
-    String tag = dataList.join('-')
-    JsonObject updateJson = new JsonObject()
-    updateJson.addProperty('homepage', homepageURL)
-    JsonObject promos = new JsonObject()
-    updateJson.add('promos', promos)
-    JsonObject oldUpdateJson = new JsonParser().parse(new File(updateJsonLocation).text).getAsJsonObject().
-            getAsJsonObject('promos')
-    for (Map.Entry<String, JsonElement> entry : oldUpdateJson.entrySet())
-    {
-        if (entry.key.contains(mcVersion) || !entry.key.contains('-'))
+    doLast {
+        String updateJsonLocation = './update.json'
+        println 'Regenerating update.json from version: ' + version
+        JsonObject newUpdateJson = new JsonObject()
+        newUpdateJson.addProperty('homepage', homepageURL)
+        JsonObject promos = new JsonObject()
+        newUpdateJson.add('promos', promos)
+        JsonObject oldUpdateJson = new JsonParser().
+                parse(new File(updateJsonLocation).text).getAsJsonObject().
+                getAsJsonObject('promos')
+        for (Map.Entry<String, JsonElement> entry : oldUpdateJson.entrySet())
         {
-            promos.addProperty(entry.key, tag)
-            continue
+            promos.addProperty(entry.key, entry.value.asString)
         }
-        promos.addProperty(entry.key, ((String)entry.value.asString))
+        promos.addProperty("${mcVersion}-recommended", (String) version)
+        promos.addProperty("${mcVersion}-latest", (String) version)
+        if (mcVersion == new JsonSlurper().parse(new File('../secrets.json')).get('latest-mc-version'))
+        {
+            promos.addProperty("recommended", (String) version)
+            promos.addProperty("latest", (String) version)
+        }
+        String jsonString = new GsonBuilder().setPrettyPrinting().create().toJson(newUpdateJson)
+        new File(updateJsonLocation).text = jsonString
     }
-    String jsonString = new GsonBuilder().setPrettyPrinting().create().toJson(updateJson)
-    new File(updateJsonLocation).text = jsonString
 }
