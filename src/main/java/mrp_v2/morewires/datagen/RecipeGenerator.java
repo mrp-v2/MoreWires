@@ -17,7 +17,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 import java.util.function.Consumer;
 
-public class RecipeGenerator extends mrp_v2.mrp_v2datagenlibrary.datagen.RecipeGenerator
+public class RecipeGenerator extends mrp_v2.mrplibrary.datagen.RecipeProvider
 {
     public static final String DYEING_ID = "dyeing";
 

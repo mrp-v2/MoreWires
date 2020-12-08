@@ -4,7 +4,7 @@ import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.morewires.util.Util;
 import net.minecraft.block.Block;
 
-public class LootTables extends mrp_v2.mrp_v2datagenlibrary.datagen.LootTables
+public class LootTables extends mrp_v2.mrplibrary.datagen.BlockLootTables
 {
     public LootTables()
     {

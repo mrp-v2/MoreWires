@@ -2,10 +2,10 @@
   "multipart": [
     {
       "when": {
-        "south": "none",
-        "north": "none",
-        "east": "none",
-        "west": "none"
+          "north": "none",
+          "south": "none",
+          "east": "none",
+          "west": "none"
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"

@@ -11,7 +11,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
 
-public class ItemTagGenerator extends mrp_v2.mrp_v2datagenlibrary.datagen.ItemTagGenerator
+public class ItemTagGenerator extends mrp_v2.mrplibrary.datagen.ItemTagsProvider
 {
     public ItemTagGenerator(DataGenerator dataGenerator, BlockTagsProvider blockTagProvider, String modId,
             @Nullable ExistingFileHelper existingFileHelper)

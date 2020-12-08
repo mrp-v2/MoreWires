@@ -3,12 +3,12 @@ package mrp_v2.morewires.datagen;
 import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.util.ObjectHolder;
-import mrp_v2.mrp_v2datagenlibrary.datagen.TranslationGenerator;
+import mrp_v2.mrplibrary.datagen.LanguageProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.fml.RegistryObject;
 
-public class EN_USTranslationGenerator extends TranslationGenerator
+public class EN_USTranslationGenerator extends LanguageProvider
 {
     public EN_USTranslationGenerator(DataGenerator gen, String modid)
     {

@@ -24,8 +24,8 @@ license="All rights reserved"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${modId}]]
-    modId="mrp_v2datagenlibrary"
+    modId="mrplibrary"
     mandatory=true
-    versionRange="[${mcVersion}-${dglAPI},${mcVersion}-${dglNextAPI})"
+    versionRange="[${mcVersion}-${mrplibAPI},${mcVersion}-${mrplibNextAPI})"
     ordering="NONE"
     side="BOTH"
