@@ -14,8 +14,8 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
         if (event.includeServer())
         {
             helper.addLootTables(new LootTables());
-            helper.addRecipeGenerator(RecipeGenerator::new);
-            helper.addItemTagGenerator(ItemTagGenerator::new);
+            helper.addRecipeProvider(RecipeGenerator::new);
+            helper.addItemTagsProvider(ItemTagGenerator::new);
         }
         if (event.includeClient())
         {
