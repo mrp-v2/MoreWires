@@ -96,7 +96,15 @@ repositories {
         url = new URL('https://maven.pkg.github.com/mrp-v2/mrpLibrary')
         credentials {
             username = 'mrp-v2'
-            password = new JsonSlurper().parse(new File('../secrets.json')).get('github-packages-token')
+            File secretFile = new File('../secrets.json')
+            String token = System.getenv('PACKAGES_TOKEN')
+            if (secretFile.exists())
+            {
+                password = new JsonSlurper().parse(secretFile).get('github-packages-token')
+            } else if (token != null)
+            {
+                password = token
+            }
         }
     }
 }
