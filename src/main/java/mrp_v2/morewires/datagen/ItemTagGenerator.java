@@ -1,6 +1,7 @@
 package mrp_v2.morewires.datagen;
 
 import mrp_v2.morewires.util.ObjectHolder;
+import mrp_v2.mrplibrary.datagen.providers.ItemTagsProvider;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.TagsProvider;
@@ -11,7 +12,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
 
-public class ItemTagGenerator extends mrp_v2.mrplibrary.datagen.ItemTagsProvider
+public class ItemTagGenerator extends ItemTagsProvider
 {
     public ItemTagGenerator(DataGenerator dataGenerator, BlockTagsProvider blockTagProvider, String modId,
             @Nullable ExistingFileHelper existingFileHelper)

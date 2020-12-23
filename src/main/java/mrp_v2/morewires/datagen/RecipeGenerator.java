@@ -3,9 +3,9 @@ package mrp_v2.morewires.datagen;
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.morewires.util.Util;
+import mrp_v2.mrplibrary.datagen.providers.RecipeProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 import java.util.function.Consumer;
 
-public class RecipeGenerator extends mrp_v2.mrplibrary.datagen.RecipeProvider
+public class RecipeGenerator extends RecipeProvider
 {
     public static final String DYEING_ID = "dyeing";
 

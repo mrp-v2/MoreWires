@@ -97,7 +97,7 @@ repositories {
         credentials {
             username = 'mrp-v2'
             File secretFile = new File('../secrets.json')
-            String token = System.getenv('PACKAGES_TOKEN')
+            String token = System.getenv('GITHUB_TOKEN')
             if (secretFile.exists())
             {
                 password = new JsonSlurper().parse(secretFile).get('github-packages-token')

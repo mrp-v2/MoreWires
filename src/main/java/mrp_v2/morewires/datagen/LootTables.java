@@ -2,9 +2,10 @@ package mrp_v2.morewires.datagen;
 
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.morewires.util.Util;
+import mrp_v2.mrplibrary.datagen.BlockLootTables;
 import net.minecraft.block.Block;
 
-public class LootTables extends mrp_v2.mrplibrary.datagen.BlockLootTables
+public class LootTables extends BlockLootTables
 {
     public LootTables()
     {
