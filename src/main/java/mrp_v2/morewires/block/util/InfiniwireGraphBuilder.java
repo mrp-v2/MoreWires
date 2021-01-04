@@ -1,5 +1,6 @@
 package mrp_v2.morewires.block.util;
 
+import mrp_v2.morewires.block.InfiniwireBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
@@ -12,11 +13,13 @@ public class InfiniwireGraphBuilder
     protected final Set<Connection> connectionSet = new HashSet<>();
     protected final BlockPos originPos;
     protected final BlockState originState;
+    protected final InfiniwireBlock block;
 
-    public InfiniwireGraphBuilder(BlockPos originPos, BlockState originState)
+    public InfiniwireGraphBuilder(BlockPos originPos, BlockState originState, InfiniwireBlock block)
     {
         this.originPos = originPos;
         this.originState = originState;
+        this.block = block;
     }
 
     protected List<Connection> getOrCreateConnectionList(BlockPos pos)
@@ -66,7 +69,7 @@ public class InfiniwireGraphBuilder
                     a.positions.put(connection.b, blockMap.get(connection.b));
                 } else
                 {
-                    a = new InfiniwireChain();
+                    a = new InfiniwireChain(block);
                     a.positions.put(connection.a, blockMap.get(connection.a));
                     a.positions.put(connection.b, blockMap.get(connection.b));
                     chains.add(a);
@@ -75,22 +78,22 @@ public class InfiniwireGraphBuilder
             {
                 if (a == null && b != null)
                 {
-                    a = new InfiniwireChain();
+                    a = new InfiniwireChain(block);
                     a.positions.put(connection.a, blockMap.get(connection.a));
                     chains.add(a);
                     setupChainRelationship(a, b, connection.connectionType, chains);
                 } else if (a != null)
                 {
-                    b = new InfiniwireChain();
+                    b = new InfiniwireChain(block);
                     b.positions.put(connection.b, blockMap.get(connection.b));
                     chains.add(b);
                     setupChainRelationship(a, b, connection.connectionType, chains);
                 } else
                 {
-                    a = new InfiniwireChain();
+                    a = new InfiniwireChain(block);
                     a.positions.put(connection.a, blockMap.get(connection.a));
                     chains.add(a);
-                    b = new InfiniwireChain();
+                    b = new InfiniwireChain(block);
                     b.positions.put(connection.b, blockMap.get(connection.b));
                     chains.add(b);
                     setupChainRelationship(a, b, connection.connectionType, chains);
@@ -107,7 +110,7 @@ public class InfiniwireGraphBuilder
         }
         if (chains.size() == 0)
         {
-            InfiniwireChain chain = new InfiniwireChain();
+            InfiniwireChain chain = new InfiniwireChain(block);
             chain.positions.put(originPos, originState);
             parent.chainMap.put(originPos, chain);
         }
@@ -137,7 +140,7 @@ public class InfiniwireGraphBuilder
 
     protected InfiniwireChain mergeChains(InfiniwireChain a, InfiniwireChain b, Set<InfiniwireChain> chains)
     {
-        InfiniwireChain combinedChain = new InfiniwireChain();
+        InfiniwireChain combinedChain = new InfiniwireChain(block);
         combinedChain.positions.putAll(a.positions);
         combinedChain.positions.putAll(b.positions);
         a.chainsPoweredBy.remove(b);

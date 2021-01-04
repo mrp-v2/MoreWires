@@ -15,6 +15,12 @@ public class InfiniwireChain
     final Map<BlockPos, BlockState> positions = new HashMap<>();
     final Set<InfiniwireChain> chainsPoweredBy = new HashSet<>();
     final Set<InfiniwireChain> chainsPowering = new HashSet<>();
+    final InfiniwireBlock block;
+
+    public InfiniwireChain(InfiniwireBlock block)
+    {
+        this.block = block;
+    }
 
     void update(World world)
     {
@@ -23,10 +29,10 @@ public class InfiniwireChain
         BlockState state = getBlockState();
         int oldPower = getPower(state);
         int newPower = Math.max(powerFromChains, powerFromWorld);
-        update(getBlock(state), oldPower, newPower, world);
+        update(oldPower, newPower, world);
     }
 
-    void update(InfiniwireBlock block, int oldPower, int newPower, World world)
+    void update(int oldPower, int newPower, World world)
     {
         if (newPower != oldPower)
         {
@@ -36,7 +42,10 @@ public class InfiniwireChain
             for (InfiniwireChain chain : chainsPowering)
             {
                 int chainPower = chain.getPower();
-                if (!(chainPower == newPower || (chainPower != oldPower && oldPower > newPower)))
+                if (chainPower < newPower)
+                {
+                    chain.update(chainPower, newPower, world);
+                } else if (chainPower == oldPower)
                 {
                     chain.update(world);
                 }
@@ -72,10 +81,5 @@ public class InfiniwireChain
     int getUpdatedBlockPower(World world)
     {
         return InfiniwireBlock.getStrongestNonWireSignal(world, positions.keySet());
-    }
-
-    InfiniwireBlock getBlock(BlockState state)
-    {
-        return (InfiniwireBlock) state.getBlock();
     }
 }

@@ -259,7 +259,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
     private InfiniwireGraphBuilder getBlocksInChain(World world, BlockPos pos)
     {
         BlockState state = world.getBlockState(pos);
-        InfiniwireGraphBuilder wireGraph = new InfiniwireGraphBuilder(pos, state);
+        InfiniwireGraphBuilder wireGraph = new InfiniwireGraphBuilder(pos, state, this);
         if (state.isIn(this))
         {
             getBlocksInChain(world, pos, wireGraph, new HashSet<>());
