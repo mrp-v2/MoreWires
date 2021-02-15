@@ -11,18 +11,12 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
     @SubscribeEvent public static void registerDataProvider(final GatherDataEvent event)
     {
         DataGeneratorHelper helper = new DataGeneratorHelper(event, MoreWires.ID);
-        if (event.includeServer())
-        {
-            helper.addLootTables(new LootTables());
-            helper.addRecipeProvider(RecipeGenerator::new);
-            helper.addItemTagsProvider(ItemTagGenerator::new);
-        }
-        if (event.includeClient())
-        {
-            helper.addTextureProvider(TextureGenerator::new);
-            helper.addBlockStateProvider(BlockStateGenerator::new);
-            helper.addItemModelProvider(ItemModelGenerator::new);
-            helper.addLanguageProvider(EN_USTranslationGenerator::new);
-        }
+        helper.addLootTables(new LootTables());
+        helper.addRecipeProvider(RecipeGenerator::new);
+        helper.addItemTagsProvider(ItemTagGenerator::new);
+        helper.addTextureProvider(TextureGenerator::new);
+        helper.addBlockStateProvider(BlockStateGenerator::new);
+        helper.addItemModelProvider(ItemModelGenerator::new);
+        helper.addLanguageProvider(EN_USTranslationGenerator::new);
     }
 }

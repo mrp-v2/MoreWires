@@ -12,6 +12,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -43,12 +44,11 @@ public class RecipeGenerator extends RecipeProvider
     private void makeDyeingWireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
             ITag<Item> dyeTag)
     {
-        ShapelessRecipeBuilder.shapelessRecipe(result, 8)
-                .addIngredient(Ingredient.fromTag(ObjectHolder.WIRES_TAG), 8)
-                .addIngredient(dyeTag)
-                .addCriterion("has_wire", RecipeProvider.hasItem(ObjectHolder.WIRES_TAG))
-                .setGroup(result.asItem().getRegistryName().getPath())
-                .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, getID(result)));
+        ResourceLocation resultLoc = result.asItem().getRegistryName();
+        ShapelessRecipeBuilder.shapelessRecipe(result, 8).addIngredient(Ingredient.fromTag(ObjectHolder.WIRES_TAG), 8)
+                .addIngredient(dyeTag).addCriterion("has_wire", RecipeProvider.hasItem(ObjectHolder.WIRES_TAG))
+                .setGroup(resultLoc.getPath())
+                .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, resultLoc.getPath()));
     }
 
     private void makeInfiniwireRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
@@ -58,7 +58,7 @@ public class RecipeGenerator extends RecipeProvider
             AdjustedRedstoneItem item = ObjectHolder.INFINIWIRE_BLOCK_ITEMS.get(color).get();
             if (item.getRegistryName().equals(Items.REDSTONE.getRegistryName()))
             {
-                makeDyedInfiniwireRecipe(iFinishedRecipeConsumer, item, Tags.Items.DUSTS_REDSTONE);
+                makeDyedInfiniwireRecipe(iFinishedRecipeConsumer, item);
             } else
             {
                 makeDyedInfiniwireRecipe(iFinishedRecipeConsumer, item, ObjectHolder.WIRE_BLOCK_ITEMS.get(color).get());
@@ -70,33 +70,27 @@ public class RecipeGenerator extends RecipeProvider
     private void makeDyeingInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
             ITag<Item> dyeTag)
     {
+        ResourceLocation resultLoc = result.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
-                .addIngredient(Ingredient.fromTag(ObjectHolder.INFINIWIRES_TAG), 8)
-                .addIngredient(dyeTag)
+                .addIngredient(Ingredient.fromTag(ObjectHolder.INFINIWIRES_TAG), 8).addIngredient(dyeTag)
                 .addCriterion("has_infiniwire", RecipeProvider.hasItem(ObjectHolder.INFINIWIRES_TAG))
-                .setGroup(result.asItem().getRegistryName().getPath())
-                .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, getID(result)));
+                .setGroup(resultLoc.getPath())
+                .build(iFinishedRecipeConsumer, Util.makeResourceLocation(DYEING_ID, resultLoc.getPath()));
     }
 
-    private void makeDyedInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
-            ITag<Item> ingredient)
+    private void makeDyedInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result)
     {
         ShapelessRecipeBuilder.shapelessRecipe(result, 8)
-                .addIngredient(Ingredient.fromTag(ingredient), 8)
-                .addIngredient(Tags.Items.INGOTS_IRON)
-                .addCriterion("has_wire", RecipeProvider.hasItem(ingredient))
-                .setGroup(result.asItem().getRegistryName().getPath())
-                .build(iFinishedRecipeConsumer);
+                .addIngredient(Ingredient.fromTag(Tags.Items.DUSTS_REDSTONE), 8).addIngredient(Tags.Items.INGOTS_IRON)
+                .addCriterion("has_wire", RecipeProvider.hasItem(Tags.Items.DUSTS_REDSTONE))
+                .setGroup(result.asItem().getRegistryName().getPath()).build(iFinishedRecipeConsumer);
     }
 
     private void makeDyedInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
             IItemProvider ingredient)
     {
-        ShapelessRecipeBuilder.shapelessRecipe(result, 8)
-                .addIngredient(ingredient, 8)
-                .addIngredient(Tags.Items.INGOTS_IRON)
-                .addCriterion("has_wire", RecipeProvider.hasItem(ingredient))
-                .setGroup(result.asItem().getRegistryName().getPath())
-                .build(iFinishedRecipeConsumer);
+        ShapelessRecipeBuilder.shapelessRecipe(result, 8).addIngredient(ingredient, 8)
+                .addIngredient(Tags.Items.INGOTS_IRON).addCriterion("has_wire", RecipeProvider.hasItem(ingredient))
+                .setGroup(result.asItem().getRegistryName().getPath()).build(iFinishedRecipeConsumer);
     }
 }

@@ -6,7 +6,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import java.awt.image.BufferedImage;
 import java.util.function.Supplier;
 
 public class TextureGenerator extends TextureProvider
@@ -18,15 +17,15 @@ public class TextureGenerator extends TextureProvider
 
     @Override protected void addTextures(FinishedTextureConsumer finishedTextureConsumer)
     {
-        Supplier<BufferedImage> redstoneTextureGetter = () -> getTexture(new ResourceLocation("item/redstone"));
-        BufferedImage blueWireTexture = redstoneTextureGetter.get(), greenWireTexture = redstoneTextureGetter.get(),
+        Supplier<Texture> redstoneTextureGetter = () -> getTexture(new ResourceLocation("item/redstone"));
+        Texture blueWireTexture = redstoneTextureGetter.get(), greenWireTexture = redstoneTextureGetter.get(),
                 orangeWireTexture = redstoneTextureGetter.get(), pinkWireTexture = redstoneTextureGetter.get(),
                 yellowWireTexture = redstoneTextureGetter.get();
-        adjustHSB(blueWireTexture, -120, 100, 0);
-        adjustHSB(greenWireTexture, 120, 100, 0);
-        adjustHSB(orangeWireTexture, 30, 100, 0);
-        adjustHSB(pinkWireTexture, -60, 100, 0);
-        adjustHSB(yellowWireTexture, 60, 100, 0);
+        adjustHSB(blueWireTexture.getTexture(), -120, 100, 0);
+        adjustHSB(greenWireTexture.getTexture(), 120, 100, 0);
+        adjustHSB(orangeWireTexture.getTexture(), 30, 100, 0);
+        adjustHSB(pinkWireTexture.getTexture(), -60, 100, 0);
+        adjustHSB(yellowWireTexture.getTexture(), 60, 100, 0);
         finish(blueWireTexture, new ResourceLocation(MoreWires.ID, "item/blue_wire"), finishedTextureConsumer);
         finish(greenWireTexture, new ResourceLocation(MoreWires.ID, "item/green_wire"), finishedTextureConsumer);
         finish(orangeWireTexture, new ResourceLocation(MoreWires.ID, "item/orange_wire"), finishedTextureConsumer);
