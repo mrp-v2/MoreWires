@@ -9,6 +9,9 @@ buildscript {
         maven {
             url = 'https://files.minecraftforge.net/maven'
         }
+        maven {
+            url = 'https://plugins.gradle.org/m2/'
+        }
         jcenter()
         mavenCentral()
         maven {
@@ -18,11 +21,12 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'gradle.plugin.com.matthewprenger', name: 'CurseGradle', version: '1.4.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'maven-publish'
+apply plugin: 'com.matthewprenger.cursegradle'
 String mcVersion = version.split('-')[0]
 if (forgeVersion == 'latest' || forgeVersion == 'recommended')
 {
@@ -60,6 +64,7 @@ if (mrpLibVersion != 'none')
 archivesBaseName = modId
 group = "${author}.${archivesBaseName}"
 boolean usesMixins = file("src/main/resources/${modId}.mixins.json").exists()
+File secretFile = file '../secrets.json'
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' +
         System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
@@ -135,14 +140,9 @@ repositories {
         url = new URL('https://maven.pkg.github.com/mrp-v2/mrpLibrary')
         credentials {
             username = 'mrp-v2'
-            File secretFile = new File('../secrets.json')
-            String token = System.getenv('GITHUB_TOKEN')
             if (secretFile.exists())
             {
                 password = new JsonSlurper().parse(new File('../secrets.json')).get('github-packages-token')
-            } else if (token != null)
-            {
-                password = token
             }
         }
     }
@@ -233,7 +233,10 @@ publishing {
             url = uri('https://maven.pkg.github.com/mrp-v2/' + capitalizedModId)
             credentials {
                 username = 'mrp-v2'
-                password = System.getenv('GITHUB_TOKEN')
+                if (secretFile.exists())
+                {
+                    password = new JsonSlurper().parse(new File('../secrets.json')).get('github-packages-token')
+                }
             }
         }
     }
@@ -283,5 +286,50 @@ if (usesMixins)
 
     mixin {
         add sourceSets.main, "${modId}.refmap.json"
+    }
+}
+
+task publishToGithubAndCurseforge {
+    dependsOn ':publishGprPublicationToGitHubPackagesRepository'
+    dependsOn ":curseforge${projectId}"
+}
+
+curseforge {
+    if (secretFile.exists())
+    {
+        apiKey = new JsonSlurper().parse(secretFile).get('curseforge-api-token')
+    }
+    project {
+        id = projectId
+        StringBuilder out = new StringBuilder(), error = new StringBuilder()
+        Process previousVersionProcess = ['git', 'describe', '--tags', '--abbrev=0', "${version}^"].execute()
+        previousVersionProcess.consumeProcessOutput(out, error)
+        previousVersionProcess.waitFor()
+        String previousVersion = out.toString().trim()
+        out = new StringBuilder()
+        println('Previous Version: ' + previousVersion)
+        println('Error?: ' + error.toString().trim())
+        error = new StringBuilder()
+        Process gitLogProcess = ['git', 'log', '--pretty=format:"%s"', "${previousVersion}..${version}"].execute()
+        gitLogProcess.consumeProcessOutput(out, error)
+        gitLogProcess.waitFor()
+        String changelogStr = out.toString().trim()
+        println('Changelog: ' + changelogStr)
+        println('Error?: ' + error.toString().trim())
+        changelog = changelogStr
+        releaseType = 'release'
+        addGameVersion mcVersion
+        if (mrpLibVersion != 'none')
+        {
+            relations {
+                requiredDependency 'mrp-library'
+            }
+        }
+    }
+    options {
+        debug = false
+        javaVersionAutoDetect = false
+        javaIntegration = true
+        forgeGradleIntegration = true
     }
 }
