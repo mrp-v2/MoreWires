@@ -1,21 +1,27 @@
 package mrp_v2.morewires.datagen;
 
 import mrp_v2.morewires.util.ObjectHolder;
-import mrp_v2.morewires.util.Util;
 import mrp_v2.mrplibrary.datagen.BlockLootTables;
 import net.minecraft.block.Block;
+import net.minecraftforge.fml.RegistryObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LootTables extends BlockLootTables
 {
     public LootTables()
     {
-        Util.doOperationOn((blockObject) -> this.dropSelfLootTable(blockObject.get()),
-                ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE.values());
-        Util.doOperationOn((blockObject) -> this.dropSelfLootTable(blockObject.get()),
-                ObjectHolder.INFINIWIRE_BLOCKS.values());
+        List<RegistryObject<? extends Block>> blockObjects = new ArrayList<>();
+        blockObjects.addAll(ObjectHolder.INFINIWIRE_BLOCKS.values());
+        blockObjects.addAll(ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE.values());
+        for (RegistryObject<? extends Block> blockObject : blockObjects)
+        {
+            dropSelfLootTable(blockObject.get());
+        }
     }
 
-    private void dropSelfLootTable(Block block)
+    protected void dropSelfLootTable(Block block)
     {
         this.addLootTable(block, this::registerDropSelfLootTable);
     }

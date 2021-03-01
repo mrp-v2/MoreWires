@@ -23,9 +23,4 @@ license="All rights reserved"
     versionRange="[${mcVersion}]"
     ordering="NONE"
     side="BOTH"
-[[dependencies.${modId}]]
-    modId="mrplibrary"
-    mandatory=true
-    versionRange="[${mrpLibAPI},${mrpLibNextAPI})"
-    ordering="AFTER"
-    side="BOTH"
+${githubDependencies}

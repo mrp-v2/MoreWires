@@ -3,7 +3,6 @@ package mrp_v2.morewires.datagen;
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
 import mrp_v2.morewires.item.InfiniwireItem;
 import mrp_v2.morewires.util.ObjectHolder;
-import mrp_v2.morewires.util.Util;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -22,7 +21,7 @@ public class ItemModelGenerator extends ItemModelProvider
     {
         for (RegistryObject<AdjustedRedstoneItem> item : ObjectHolder.WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE.values())
         {
-            registerWireItemModel(item.get());
+            registerItemModel(item.get());
         }
         for (RegistryObject<InfiniwireItem> item : ObjectHolder.INFINIWIRE_BLOCK_ITEMS.values())
         {
@@ -30,30 +29,26 @@ public class ItemModelGenerator extends ItemModelProvider
         }
     }
 
-    private void registerWireItemModel(Item item)
+    protected void registerItemModel(Item item)
     {
-        this.registerItemModel(item);
+        this.registerItemModel(item, modLoc("item/" + item.getRegistryName().getPath()));
     }
 
-    private void registerItemModel(Item item)
+    protected void registerItemModel(Item item, ResourceLocation texture)
     {
-        this.registerItemModel(item, Util.makeResourceLocation("item", Util.getId(item)));
-    }
-
-    private void registerItemModel(Item item, ResourceLocation texture)
-    {
-        super.singleTexture(Util.getId(item), new ResourceLocation("item/generated"), "layer0", texture);
+        super.singleTexture(item.getRegistryName().getPath(), new ResourceLocation("item/generated"), "layer0",
+                texture);
     }
 
     private void registerInfiniwireItemModel(Item item)
     {
-        String path = Util.getId(item).replace("infini", "");
+        String path = item.getRegistryName().getPath().replace("infini", "");
         if (path.contains("red_wire"))
         {
             this.registerItemModel(item, new ResourceLocation("minecraft:item/redstone"));
         } else
         {
-            this.registerItemModel(item, Util.makeResourceLocation("item", path));
+            this.registerItemModel(item, modLoc("item/" + path));
         }
     }
 }

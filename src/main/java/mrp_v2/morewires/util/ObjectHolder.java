@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -34,9 +35,9 @@ public class ObjectHolder
     public static final HashMap<String, RegistryObject<InfiniwireItem>> INFINIWIRE_BLOCK_ITEMS;
     public static final HashMap<String, Pair<Float, ITag<Item>>> COLORS = new HashMap<>();
     public static final Tags.IOptionalNamedTag<Item> WIRES_TAG =
-            ItemTags.createOptional(Util.makeResourceLocation("wires"));
+            ItemTags.createOptional(new ResourceLocation(MoreWires.ID, "wires"));
     public static final Tags.IOptionalNamedTag<Item> INFINIWIRES_TAG =
-            ItemTags.createOptional(Util.makeResourceLocation("infiniwires"));
+            ItemTags.createOptional(new ResourceLocation(MoreWires.ID, "infiniwires"));
 
     static
     {
@@ -63,10 +64,10 @@ public class ObjectHolder
         }
         String red = "red";
         COLORS.put(red, Pair.of(0.0F, Tags.Items.DYES_RED));
-        WIRE_BLOCKS.put(red, VANILLA_BLOCKS.register("redstone_wire",
-                () -> new AdjustedRedstoneWireBlock(COLORS.get(red).getLeft())));
-        WIRE_BLOCK_ITEMS.put(red, VANILLA_ITEMS.register("redstone",
-                () -> WIRE_BLOCKS.get(red).get().createBlockItem(COLORS.get(red).getRight())));
+        WIRE_BLOCKS.put(red, VANILLA_BLOCKS
+                .register("redstone_wire", () -> new AdjustedRedstoneWireBlock(COLORS.get(red).getLeft())));
+        WIRE_BLOCK_ITEMS.put(red, VANILLA_ITEMS
+                .register("redstone", () -> WIRE_BLOCKS.get(red).get().createBlockItem(COLORS.get(red).getRight())));
         INFINIWIRE_BLOCKS = new HashMap<>(COLORS.size());
         INFINIWIRE_BLOCK_ITEMS = new HashMap<>(COLORS.size());
         for (String color : COLORS.keySet())

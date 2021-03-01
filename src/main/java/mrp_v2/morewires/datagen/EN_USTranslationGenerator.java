@@ -27,7 +27,7 @@ public class EN_USTranslationGenerator extends LanguageProvider
         }
     }
 
-    private void addWireTranslation(Block block)
+    protected void addWireTranslation(Block block)
     {
         String name = block.getRegistryName().getPath().replace("_", " ");
         for (int i = 0; i < name.length() - 1; i++)

@@ -4,7 +4,6 @@ import mrp_v2.morewires.MoreWires;
 import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.util.ObjectHolder;
-import mrp_v2.morewires.util.Util;
 import mrp_v2.mrplibrary.datagen.providers.BlockStateProvider;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.data.DataGenerator;
@@ -19,12 +18,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class BlockStateGenerator extends BlockStateProvider
 {
-    private final ExistingFileHelper existingFileHelper;
+    protected ModelFile dotModel, upModel, side0Model, side1Model, sideAlt0Model, sideAlt1Model;
 
     public BlockStateGenerator(DataGenerator gen, String modId, ExistingFileHelper exFileHelper)
     {
         super(gen, modId, exFileHelper);
-        this.existingFileHelper = exFileHelper;
     }
 
     @Override protected void registerStatesAndModels()
@@ -44,72 +42,90 @@ public class BlockStateGenerator extends BlockStateProvider
         registerInfiniwireStates();
     }
 
-    @SafeVarargs private final void registerModel(String suffix, Pair<String, String>... textures)
+    @SafeVarargs protected final void registerModel(String suffix, Pair<String, String>... textures)
     {
         ModelBuilder<BlockModelBuilder> modelBuilder = this.models()
                 .withExistingParent(MoreWires.ID + ":block/infiniwire_" + suffix,
                         "minecraft:block/redstone_dust_" + suffix);
         for (Pair<String, String> texture : textures)
         {
-            modelBuilder
-                    .texture(texture.getLeft(), Util.makeResourceLocation("block", "infiniwire_" + texture.getRight()));
+            modelBuilder.texture(texture.getLeft(), modLoc("block/infiniwire_" + texture.getRight()));
         }
     }
 
-    private void registerWireStates()
+    protected void registerWireStates()
     {
+        setupWireModels();
         for (RegistryObject<AdjustedRedstoneWireBlock> block : ObjectHolder.WIRE_BLOCKS_EXCLUDING_REDSTONE.values())
         {
-            registerWireBasedStates(block.get(), "redstone_dust", true);
+            registerWireBasedStates(block.get());
         }
     }
 
-    private void registerInfiniwireStates()
+    protected void setupWireModels()
     {
-        for (RegistryObject<InfiniwireBlock> block : ObjectHolder.INFINIWIRE_BLOCKS.values())
-        {
-            registerWireBasedStates(block.get(), "infiniwire", false);
-        }
+        dotModel = models().getExistingFile(new ResourceLocation("block/redstone_dust_dot"));
+        upModel = models().getExistingFile(new ResourceLocation("block/redstone_dust_up"));
+        side0Model = models().getExistingFile(new ResourceLocation("block/redstone_dust_side0"));
+        side1Model = models().getExistingFile(new ResourceLocation("block/redstone_dust_side1"));
+        sideAlt0Model = models().getExistingFile(new ResourceLocation("block/redstone_dust_side_alt0"));
+        sideAlt1Model = models().getExistingFile(new ResourceLocation("block/redstone_dust_side_alt1"));
     }
 
-    private void registerWireBasedStates(AdjustedRedstoneWireBlock wireBasedBlock, String stem, boolean vanillaModel)
+    protected void registerWireBasedStates(AdjustedRedstoneWireBlock wireBasedBlock)
     {
-        ModelFile.ExistingModelFile dotModel = getModel(vanillaModel, "block/" + stem + "_dot");
-        ModelFile.ExistingModelFile upModel = getModel(vanillaModel, "block/" + stem + "_up");
-        ModelFile.ExistingModelFile side0Model = getModel(vanillaModel, "block/" + stem + "_side0");
-        ModelFile.ExistingModelFile side1Model = getModel(vanillaModel, "block/" + stem + "_side1");
-        ModelFile.ExistingModelFile sideAlt0Model = getModel(vanillaModel, "block/" + stem + "_side_alt0");
-        ModelFile.ExistingModelFile sideAlt1Model = getModel(vanillaModel, "block/" + stem + "_side_alt1");
-        this.getMultipartBuilder(wireBasedBlock).part().modelFile(dotModel).addModel()
+        this.getMultipartBuilder(wireBasedBlock)
+                // no connections or connections on different axes
+                .part().modelFile(dotModel).addModel().useOr().nestedGroup()
                 .condition(RedstoneWireBlock.NORTH, RedstoneSide.NONE)
                 .condition(RedstoneWireBlock.SOUTH, RedstoneSide.NONE)
                 .condition(RedstoneWireBlock.EAST, RedstoneSide.NONE)
-                .condition(RedstoneWireBlock.WEST, RedstoneSide.NONE).end().part().modelFile(dotModel).addModel()
+                .condition(RedstoneWireBlock.WEST, RedstoneSide.NONE).end().nestedGroup().nestedGroup().useOr()
                 .condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP)
-                .condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP).end().part().modelFile(dotModel)
-                .addModel().condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP)
-                .condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP).end().part().modelFile(dotModel)
-                .addModel().condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP)
-                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).end().part().modelFile(dotModel)
-                .addModel().condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP)
-                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).end().part()
-                .modelFile(side0Model).addModel().condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP)
-                .end().part().modelFile(sideAlt0Model).addModel()
-                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP).end().part()
-                .modelFile(sideAlt1Model).rotationY(270).addModel()
-                .condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP).end().part()
-                .modelFile(side1Model).rotationY(270).addModel()
-                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).end().part().modelFile(upModel)
-                .addModel().condition(RedstoneWireBlock.NORTH, RedstoneSide.UP).end().part().modelFile(upModel)
-                .rotationY(90).addModel().condition(RedstoneWireBlock.EAST, RedstoneSide.UP).end().part()
-                .modelFile(upModel).rotationY(180).addModel().condition(RedstoneWireBlock.SOUTH, RedstoneSide.UP).end()
+                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP).endNestedGroup().nestedGroup()
+                .useOr().condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP)
+                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).endNestedGroup().end().end()
+                //
+                .part().modelFile(side0Model).addModel()
+                .condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                //
+                .part().modelFile(sideAlt0Model).addModel()
+                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                //
+                .part().modelFile(sideAlt1Model).rotationY(270).addModel()
+                .condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                //
+                .part().modelFile(side1Model).rotationY(270).addModel()
+                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                //
+                .part().modelFile(upModel).addModel().condition(RedstoneWireBlock.NORTH, RedstoneSide.UP).end()
+                //
+                .part().modelFile(upModel).rotationY(90).addModel().condition(RedstoneWireBlock.EAST, RedstoneSide.UP)
+                .end()
+                //
+                .part().modelFile(upModel).rotationY(180).addModel().condition(RedstoneWireBlock.SOUTH, RedstoneSide.UP)
+                .end()
+                //
                 .part().modelFile(upModel).rotationY(270).addModel().condition(RedstoneWireBlock.WEST, RedstoneSide.UP)
                 .end();
     }
 
-    private ModelFile.ExistingModelFile getModel(boolean vanilla, String path)
+    protected void registerInfiniwireStates()
     {
-        ResourceLocation location = vanilla ? mcLoc(path) : modLoc(path);
-        return new ModelFile.ExistingModelFile(location, this.existingFileHelper);
+        setupInfiniwireModels();
+        for (RegistryObject<InfiniwireBlock> block : ObjectHolder.INFINIWIRE_BLOCKS.values())
+        {
+            registerWireBasedStates(block.get());
+        }
+    }
+
+    protected void setupInfiniwireModels()
+    {
+        dotModel = models().getExistingFile(new ResourceLocation(MoreWires.ID, "block/infiniwire_dot"));
+        upModel = models().getExistingFile(new ResourceLocation(MoreWires.ID, "block/infiniwire_up"));
+        side0Model = models().getExistingFile(new ResourceLocation(MoreWires.ID, "block/infiniwire_side0"));
+        side1Model = models().getExistingFile(new ResourceLocation(MoreWires.ID, "block/infiniwire_side1"));
+        sideAlt0Model = models().getExistingFile(new ResourceLocation(MoreWires.ID, "block/infiniwire_side_alt0"));
+        sideAlt1Model = models().getExistingFile(new ResourceLocation(MoreWires.ID, "block/infiniwire_side_alt1"));
     }
 }

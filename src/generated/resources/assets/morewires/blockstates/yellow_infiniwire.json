@@ -2,46 +2,38 @@
   "multipart": [
     {
       "when": {
-          "north": "none",
-          "south": "none",
-          "east": "none",
-          "west": "none"
-      },
-      "apply": {
-        "model": "morewires:block/infiniwire_dot"
-      }
-    },
-    {
-      "when": {
-        "north": "side|up",
-        "east": "side|up"
-      },
-      "apply": {
-        "model": "morewires:block/infiniwire_dot"
-      }
-    },
-    {
-      "when": {
-        "south": "side|up",
-        "east": "side|up"
-      },
-      "apply": {
-        "model": "morewires:block/infiniwire_dot"
-      }
-    },
-    {
-      "when": {
-        "south": "side|up",
-        "west": "side|up"
-      },
-      "apply": {
-        "model": "morewires:block/infiniwire_dot"
-      }
-    },
-    {
-      "when": {
-        "north": "side|up",
-        "west": "side|up"
+        "OR": [
+          {
+            "north": "none",
+            "south": "none",
+            "east": "none",
+            "west": "none"
+          },
+          {
+            "AND": [
+              {
+                "OR": [
+                  {
+                    "north": "side|up"
+                  },
+                  {
+                    "south": "side|up"
+                  }
+                ]
+              },
+              {
+                "OR": [
+                  {
+                    "east": "side|up"
+                  },
+                  {
+                    "west": "side|up"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       "apply": {
         "model": "morewires:block/infiniwire_dot"
