@@ -349,7 +349,6 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
                     }
                     relevantWireNeighbors.add(neighborUp);
                     wireGraph.addNewConnection(pos, thisState, neighborUp, neighborUpState, connectionType);
-                    continue;
                 }
             }
             if (!neighborIsNormalCube)
