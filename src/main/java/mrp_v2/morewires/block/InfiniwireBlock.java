@@ -100,9 +100,9 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
 
     private int getStrongestNonWireSignal(World world, BlockPos pos)
     {
-        this.canProvidePower = false;
+        globalCanProvidePower = false;
         int strongest = world.getRedstonePowerFromNeighbors(pos);
-        this.canProvidePower = true;
+        globalCanProvidePower = true;
         return strongest;
     }
 

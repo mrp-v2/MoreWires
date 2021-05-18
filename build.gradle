@@ -379,22 +379,38 @@ if (usesMixins)
     }
 }
 
-task publishToGithubAndCurseforge {
-    dependsOn ':regenerateUpdateJson'
+task ensureCleanWorkingTree {
     doFirst {
         Tuple2<String, String> statusResult = doCommand("git", "status")
         if (!statusResult.first.contains("working tree clean"))
         {
-            throw new IllegalStateException("Cannot publish when the working tree isn't clean")
+            throw new IllegalStateException("The working tree isn't clean")
         }
+    }
+    mustRunAfter ':regenerateUpdateJson'
+}
+
+task ensureTagExists {
+    doFirst {
         Tuple2<String, String> tagResult = doCommand("git", "tag", "$version")
         if (!tagResult.second.empty)
         {
+            if (tagResult.second.contains("already exists")) {
+                return
+            }
             throw new IllegalStateException("Error creating new tag")
         }
+        throw new IllegalStateException("Tag created, rerun the task please")
     }
-    //finalizedBy ':publishGprPublicationToGitHubPackagesRepository'
-    //finalizedBy ":curseforge${projectId}"
+    mustRunAfter ':ensureCleanWorkingTree'
+}
+
+task publishToGithubAndCurseforge {
+    dependsOn ':regenerateUpdateJson'
+    dependsOn ':ensureCleanWorkingTree'
+    dependsOn ':ensureTagExists'
+    dependsOn ':publishGprPublicationToGitHubPackagesRepository'
+    dependsOn ':curseforge'
 }
 
 curseforge {
@@ -415,14 +431,17 @@ curseforge {
         changelog = changelogResult.first
         releaseType = 'release'
         addGameVersion mcVersion
-        relations {
-            for (GithubDependency dependency : githubDependencyList)
-            {
-                requiredDependency dependency.curseforgeSlug
-            }
-            for (CurseforgeDependency dependency : curseforgeDependencyList)
-            {
-                requiredDependency dependency.curseforgeSlug
+        if (githubDependencyList.size() > 0 || curseforgeDependencyList.size() > 0)
+        {
+            relations {
+                for (GithubDependency dependency : githubDependencyList)
+                {
+                    requiredDependency dependency.curseforgeSlug
+                }
+                for (CurseforgeDependency dependency : curseforgeDependencyList)
+                {
+                    requiredDependency dependency.curseforgeSlug
+                }
             }
         }
     }
@@ -441,4 +460,11 @@ static Tuple2<String, String> doCommand(String... command)
     commandProcess.consumeProcessOutput(out, error)
     commandProcess.waitFor()
     return new Tuple2<>(out.toString().trim(), error.toString().trim())
+}
+
+tasks.getByName('publishGprPublicationToGitHubPackagesRepository').configure {
+    mustRunAfter ':ensureTagExists'
+}
+tasks.getByName('curseforge').configure {
+    mustRunAfter ':publishGprPublicationToGitHubPackagesRepository'
 }
