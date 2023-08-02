@@ -25,7 +25,8 @@ public class RecipeGenerator extends RecipeProvider
         super(generatorIn, modId);
     }
 
-    @Override protected void registerRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
+    @Override
+    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
     {
         makeWireRecipes(iFinishedRecipeConsumer);
         makeInfiniwireRecipes(iFinishedRecipeConsumer);
@@ -43,10 +44,10 @@ public class RecipeGenerator extends RecipeProvider
             ITag<Item> dyeTag)
     {
         ResourceLocation resultLoc = result.asItem().getRegistryName();
-        ShapelessRecipeBuilder.shapelessRecipe(result, 8).addIngredient(Ingredient.fromTag(ObjectHolder.WIRES_TAG), 8)
-                .addIngredient(dyeTag).addCriterion("has_wire", RecipeProvider.hasItem(ObjectHolder.WIRES_TAG))
-                .setGroup(resultLoc.getPath())
-                .build(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
+        ShapelessRecipeBuilder.shapeless(result, 8).requires(Ingredient.of(ObjectHolder.WIRES_TAG), 8)
+                .requires(dyeTag).unlockedBy("has_wire", RecipeProvider.has(ObjectHolder.WIRES_TAG))
+                .group(resultLoc.getPath())
+                .save(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
     }
 
     private void makeInfiniwireRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
@@ -63,18 +64,18 @@ public class RecipeGenerator extends RecipeProvider
             ITag<Item> dyeTag)
     {
         ResourceLocation resultLoc = result.asItem().getRegistryName();
-        ShapelessRecipeBuilder.shapelessRecipe(result, 8)
-                .addIngredient(Ingredient.fromTag(ObjectHolder.INFINIWIRES_TAG), 8).addIngredient(dyeTag)
-                .addCriterion("has_infiniwire", RecipeProvider.hasItem(ObjectHolder.INFINIWIRES_TAG))
-                .setGroup(resultLoc.getPath())
-                .build(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
+        ShapelessRecipeBuilder.shapeless(result, 8)
+                .requires(Ingredient.of(ObjectHolder.INFINIWIRES_TAG), 8).requires(dyeTag)
+                .unlockedBy("has_infiniwire", RecipeProvider.has(ObjectHolder.INFINIWIRES_TAG))
+                .group(resultLoc.getPath())
+                .save(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
     }
 
     private void makeDyedInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
             IItemProvider ingredient)
     {
-        ShapelessRecipeBuilder.shapelessRecipe(result, 8).addIngredient(ingredient, 8)
-                .addIngredient(Tags.Items.INGOTS_IRON).addCriterion("has_wire", RecipeProvider.hasItem(ingredient))
-                .setGroup(result.asItem().getRegistryName().getPath()).build(iFinishedRecipeConsumer);
+        ShapelessRecipeBuilder.shapeless(result, 8).requires(ingredient, 8)
+                .requires(Tags.Items.INGOTS_IRON).unlockedBy("has_wire", RecipeProvider.has(ingredient))
+                .group(result.asItem().getRegistryName().getPath()).save(iFinishedRecipeConsumer);
     }
 }

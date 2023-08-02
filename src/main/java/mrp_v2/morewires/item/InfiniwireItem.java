@@ -12,7 +12,8 @@ public class InfiniwireItem extends AdjustedRedstoneItem
         super(blockIn, builder, dyeTag);
     }
 
-    @Override public boolean hasEffect(ItemStack stack)
+    @Override
+    public boolean isFoil(ItemStack stack)
     {
         return true;
     }

@@ -20,10 +20,11 @@ public class ItemTagGenerator extends ItemTagsProvider
         super(dataGenerator, blockTagProvider, modId, existingFileHelper);
     }
 
-    @Override protected void registerTags()
+    @Override
+    protected void addTags()
     {
-        TagsProvider.Builder<Item> wiresTagBuilder = this.getOrCreateBuilder(ObjectHolder.WIRES_TAG);
-        TagsProvider.Builder<Item> infiniwiresTagBuilder = this.getOrCreateBuilder(ObjectHolder.INFINIWIRES_TAG);
+        TagsProvider.Builder<Item> wiresTagBuilder = this.tag(ObjectHolder.WIRES_TAG);
+        TagsProvider.Builder<Item> infiniwiresTagBuilder = this.tag(ObjectHolder.INFINIWIRES_TAG);
         for (String color : ObjectHolder.COLORS.keySet())
         {
             wiresTagBuilder.add(ObjectHolder.WIRE_BLOCK_ITEMS.get(color).get());

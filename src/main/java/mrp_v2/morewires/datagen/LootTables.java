@@ -23,6 +23,6 @@ public class LootTables extends BlockLootTables
 
     protected void dropSelfLootTable(Block block)
     {
-        this.addLootTable(block, this::registerDropSelfLootTable);
+        this.addLootTable(block, this::dropSelf);
     }
 }

@@ -27,7 +27,7 @@ public class EventHandler
         blockObjects.addAll(ObjectHolder.WIRE_BLOCKS.values());
         for (RegistryObject<? extends Block> blockObject : blockObjects)
         {
-            RenderTypeLookup.setRenderLayer(blockObject.get(), RenderType.getCutout());
+            RenderTypeLookup.setRenderLayer(blockObject.get(), RenderType.cutout());
         }
     }
 

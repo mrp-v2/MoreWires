@@ -65,7 +65,7 @@ public class InfiniwireChain
 
     int getPower(BlockState state)
     {
-        return state.get(InfiniwireBlock.POWER);
+        return state.getValue(InfiniwireBlock.POWER);
     }
 
     int getPowerFromRelevantChains()

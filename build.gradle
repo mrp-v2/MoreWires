@@ -7,7 +7,7 @@ import groovy.json.JsonSlurper
 buildscript {
     repositories {
         maven {
-            url = 'https://files.minecraftforge.net/maven'
+            url = 'https://maven.minecraftforge.net'
         }
         maven {
             url = 'https://plugins.gradle.org/m2'
@@ -19,7 +19,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         classpath group: 'gradle.plugin.com.matthewprenger', name: 'CurseGradle', version: '1.4.0'
     }
@@ -93,43 +93,6 @@ for (GithubDependency dependency : githubDependencyList)
 {
     println('Added GitHub dependency: ' + dependency.githubAddress + ", Version: " + dependency.apiVersion +
             dependency.patchVersion + ", Next API Version: " + dependency.nextAPIVersion)
-}
-
-class CurseforgeDependency
-{
-    public final String curseforgeSlug
-    public final String projectId
-    public final String fileId
-
-    CurseforgeDependency(String data)
-    {
-        int seperator1 = data.indexOf('|'), seperator2 = data.indexOf(':')
-        curseforgeSlug = data.substring(0, seperator1)
-        projectId = data.substring(seperator1 + 1, seperator2)
-        fileId = data.substring(seperator2 + 1)
-    }
-
-    static List<CurseforgeDependency> makeCurseforgeDependencyList(String curseforgeDependencies)
-    {
-        if (!curseforgeDependencies.contains(';'))
-        {
-            return new ArrayList<CurseforgeDependency>()
-        }
-        String[] dependenciesArray = curseforgeDependencies.split(';')
-        List<CurseforgeDependency> dependencyList = new ArrayList<>()
-        for (String dependencyStr : dependenciesArray)
-        {
-            dependencyList.add(new CurseforgeDependency(dependencyStr))
-        }
-        return dependencyList
-    }
-}
-
-List<CurseforgeDependency> curseforgeDependencyList =
-        CurseforgeDependency.makeCurseforgeDependencyList(curseforgeDependencies)
-for (CurseforgeDependency dependency : curseforgeDependencyList)
-{
-    println('Added Curseforge dependency: ' + dependency.curseforgeSlug)
 }
 
 archivesBaseName = modId
@@ -237,12 +200,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
     for (GithubDependency dependency : githubDependencyList)
     {
-        compile fg.deobf(dependency.modNamespace + '.' + dependency.modId + ':' + dependency.modId + ':' +
+        implementation fg.deobf(dependency.modNamespace + '.' + dependency.modId + ':' + dependency.modId + ':' +
                 dependency.apiVersion + dependency.patchVersion)
-    }
-    for (CurseforgeDependency dependency : curseforgeDependencyList)
-    {
-        compile fg.deobf("curse.maven:${dependency.curseforgeSlug}-${dependency.projectId}:${dependency.fileId}")
     }
 }
 
@@ -267,6 +226,7 @@ jar {
 jar.finalizedBy('reobfJar')
 
 processResources {
+    setDuplicatesStrategy(DuplicatesStrategy.INCLUDE)
     String tempMCVersion = mcVersion
     if (mcVersion == "1.16.5")
     {
@@ -431,14 +391,10 @@ curseforge {
         changelog = changelogResult.first
         releaseType = 'release'
         addGameVersion mcVersion
-        if (githubDependencyList.size() > 0 || curseforgeDependencyList.size() > 0)
+        if (githubDependencyList.size() > 0)
         {
             relations {
                 for (GithubDependency dependency : githubDependencyList)
-                {
-                    requiredDependency dependency.curseforgeSlug
-                }
-                for (CurseforgeDependency dependency : curseforgeDependencyList)
                 {
                     requiredDependency dependency.curseforgeSlug
                 }

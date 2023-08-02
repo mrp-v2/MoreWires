@@ -32,7 +32,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 
     public AdjustedRedstoneWireBlock(float hueChange)
     {
-        this(Properties.from(Blocks.REDSTONE_WIRE), hueChange);
+        this(Properties.copy(Blocks.REDSTONE_WIRE), hueChange);
     }
 
     protected AdjustedRedstoneWireBlock(Properties properties, float hueChange)
@@ -55,9 +55,9 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         HashMap<Integer, Pair<Integer, Vector3f>> colors = new HashMap<>();
         for (int i = 0; i <= 15; i++)
         {
-            Vector3f RGBColorVecF = RedstoneWireBlock.powerRGB[i];
+            Vector3f RGBColorVecF = RedstoneWireBlock.COLORS[i];
             Vector3i RGBColorVecI =
-                    new Vector3i(RGBColorVecF.getX() * 255, RGBColorVecF.getY() * 255, RGBColorVecF.getZ() * 255);
+                    new Vector3i(RGBColorVecF.x() * 255, RGBColorVecF.y() * 255, RGBColorVecF.z() * 255);
             float[] hsb = Color.RGBtoHSB(RGBColorVecI.getX(), RGBColorVecI.getY(), RGBColorVecI.getZ(), null);
             hsb[0] += hueChange;
             if (hsb[0] > 1)
@@ -74,7 +74,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 
     public static int getColor(BlockState state)
     {
-        return blockAndStrengthToColorMap.get(state.getBlock()).get(state.get(POWER)).getLeft();
+        return blockAndStrengthToColorMap.get(state.getBlock()).get(state.getValue(POWER)).getLeft();
     }
 
     protected boolean isWireBlock(BlockState state)
@@ -89,22 +89,22 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
 
     public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)
     {
-        return new AdjustedRedstoneItem(this, new Item.Properties().group(ItemGroup.REDSTONE), dyeTag);
+        return new AdjustedRedstoneItem(this, new Item.Properties().tab(ItemGroup.TAB_REDSTONE), dyeTag);
     }
 
     @Override
-    protected RedstoneSide recalculateSide(IBlockReader reader, BlockPos pos, Direction direction,
+    protected RedstoneSide getConnectingSide(IBlockReader reader, BlockPos pos, Direction direction,
             boolean nonNormalCubeAbove)
     {
-        BlockPos offsetPos = pos.offset(direction);
+        BlockPos offsetPos = pos.relative(direction);
         BlockState offsetState = reader.getBlockState(offsetPos);
         if (nonNormalCubeAbove)
         {
-            boolean canPlaceOnTopOfOffset = this.canPlaceOnTopOf(reader, offsetPos, offsetState);
+            boolean canPlaceOnTopOfOffset = this.canSurviveOn(reader, offsetPos, offsetState);
             if (canPlaceOnTopOfOffset &&
-                    this.canThisConnectTo(reader.getBlockState(offsetPos.up()), reader, offsetPos.up(), null))
+                    this.canThisConnectTo(reader.getBlockState(offsetPos.above()), reader, offsetPos.above(), null))
             {
-                if (offsetState.isSolidSide(reader, offsetPos, direction.getOpposite()))
+                if (offsetState.isFaceSturdy(reader, offsetPos, direction.getOpposite()))
                 {
                     return RedstoneSide.UP;
                 }
@@ -112,57 +112,60 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
             }
         }
         return !this.canThisConnectTo(offsetState, reader, offsetPos, direction) &&
-                (offsetState.isNormalCube(reader, offsetPos) ||
-                        !this.canThisConnectTo(reader.getBlockState(offsetPos.down()), reader, offsetPos.down(),
+                (offsetState.isRedstoneConductor(reader, offsetPos) ||
+                        !this.canThisConnectTo(reader.getBlockState(offsetPos.below()), reader, offsetPos.below(),
                                 null)) ? RedstoneSide.NONE : RedstoneSide.SIDE;
     }
 
-    @Override protected int getStrongestSignal(World world, BlockPos pos)
+    @Override
+    protected int calculateTargetStrength(World world, BlockPos pos)
     {
         globalCanProvidePower = false;
-        int i = world.getRedstonePowerFromNeighbors(pos);
+        int i = world.getBestNeighborSignal(pos);
         globalCanProvidePower = true;
         int j = 0;
         if (i < 15)
         {
             for (Direction direction : Direction.Plane.HORIZONTAL)
             {
-                BlockPos offsetPos = pos.offset(direction);
+                BlockPos offsetPos = pos.relative(direction);
                 BlockState offsetState = world.getBlockState(offsetPos);
-                j = Math.max(j, this.getPower(offsetState));
-                BlockPos upPos = pos.up();
-                if (offsetState.isNormalCube(world, offsetPos) &&
-                        !world.getBlockState(upPos).isNormalCube(world, upPos))
+                j = Math.max(j, this.getWireSignal(offsetState));
+                BlockPos upPos = pos.above();
+                if (offsetState.isRedstoneConductor(world, offsetPos) &&
+                        !world.getBlockState(upPos).isRedstoneConductor(world, upPos))
                 {
-                    j = Math.max(j, this.getPower(world.getBlockState(offsetPos.up())));
-                } else if (!offsetState.isNormalCube(world, offsetPos))
+                    j = Math.max(j, this.getWireSignal(world.getBlockState(offsetPos.above())));
+                } else if (!offsetState.isRedstoneConductor(world, offsetPos))
                 {
-                    j = Math.max(j, this.getPower(world.getBlockState(offsetPos.down())));
+                    j = Math.max(j, this.getWireSignal(world.getBlockState(offsetPos.below())));
                 }
             }
         }
         return Math.max(i, j - 1);
     }
 
-    @Override public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    @Override
+    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     {
-        return !globalCanProvidePower ? 0 : blockState.getWeakPower(blockAccess, pos, side);
+        return !globalCanProvidePower ? 0 : blockState.getSignal(blockAccess, pos, side);
     }
 
-    @Override public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    @Override
+    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     {
         if (globalCanProvidePower && side != Direction.DOWN)
         {
-            int i = blockState.get(POWER);
+            int i = blockState.getValue(POWER);
             if (i == 0)
             {
                 return 0;
             } else
             {
                 return side != Direction.UP &&
-                        !this.getUpdatedState(blockAccess, blockState, pos)
-                                .get(FACING_PROPERTY_MAP.get(side.getOpposite()))
-                                .func_235921_b_() ? 0 : i;
+                        !this.getConnectionState(blockAccess, blockState, pos)
+                                .getValue(PROPERTY_BY_DIRECTION.get(side.getOpposite()))
+                                .isConnected() ? 0 : i;
             }
         } else
         {
@@ -170,33 +173,34 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         }
     }
 
-    @Override public boolean canProvidePower(BlockState state)
+    @Override
+    public boolean isSignalSource(BlockState state)
     {
         return globalCanProvidePower;
     }
 
     @Override public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
     {
-        int i = stateIn.get(POWER);
+        int i = stateIn.getValue(POWER);
         if (i != 0)
         {
             for (Direction direction : Direction.Plane.HORIZONTAL)
             {
-                RedstoneSide redstoneside = stateIn.get(FACING_PROPERTY_MAP.get(direction));
+                RedstoneSide redstoneside = stateIn.getValue(PROPERTY_BY_DIRECTION.get(direction));
                 switch (redstoneside)
                 {
                     case UP:
-                        this.spawnPoweredParticle(worldIn, rand, pos,
+                        this.spawnParticlesAlongLine(worldIn, rand, pos,
                                 blockAndStrengthToColorMap.get(this).get(i).getRight(), direction, Direction.UP, -0.5F,
                                 0.5F);
                     case SIDE:
-                        this.spawnPoweredParticle(worldIn, rand, pos,
+                        this.spawnParticlesAlongLine(worldIn, rand, pos,
                                 blockAndStrengthToColorMap.get(this).get(i).getRight(), Direction.DOWN, direction, 0.0F,
                                 0.5F);
                         break;
                     case NONE:
                     default:
-                        this.spawnPoweredParticle(worldIn, rand, pos,
+                        this.spawnParticlesAlongLine(worldIn, rand, pos,
                                 blockAndStrengthToColorMap.get(this).get(i).getRight(), Direction.DOWN, direction, 0.0F,
                                 0.3F);
                 }
@@ -207,7 +211,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
             @Nullable Direction side)
     {
-        if (blockState.isIn(this))
+        if (blockState.is(this))
         {
             return true;
         }
