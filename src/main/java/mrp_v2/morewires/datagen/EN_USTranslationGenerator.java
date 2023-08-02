@@ -6,7 +6,7 @@ import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.mrplibrary.datagen.providers.LanguageProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 public class EN_USTranslationGenerator extends LanguageProvider
 {

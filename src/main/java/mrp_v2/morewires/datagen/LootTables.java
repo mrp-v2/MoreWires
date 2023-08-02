@@ -3,7 +3,7 @@ package mrp_v2.morewires.datagen;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.mrplibrary.datagen.BlockLootTables;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;

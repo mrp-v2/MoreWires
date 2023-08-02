@@ -5,7 +5,7 @@ import mrp_v2.morewires.block.util.InfiniwireGraphBuilder;
 import mrp_v2.morewires.item.InfiniwireItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -58,7 +58,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
     }
 
     @Override
-    public InfiniwireItem createBlockItem(Tag<Item> dyeTag)
+    public InfiniwireItem createBlockItem(TagKey<Item> dyeTag)
     {
         return new InfiniwireItem(this, new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE), dyeTag);
     }
@@ -211,7 +211,7 @@ public class InfiniwireBlock extends AdjustedRedstoneWireBlock
         {
             return;
         }
-        if (state.hasTileEntity() && (!state.is(newState.getBlock()) || !newState.hasTileEntity()))
+        if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity()))
         {
             worldIn.removeBlockEntity(pos);
         }

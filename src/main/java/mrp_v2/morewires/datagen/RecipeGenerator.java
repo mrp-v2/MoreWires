@@ -7,12 +7,12 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Consumer;
 
@@ -26,7 +26,7 @@ public class RecipeGenerator extends RecipeProvider
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<FinishedRecipe> iFinishedRecipeConsumer)
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> iFinishedRecipeConsumer)
     {
         makeWireRecipes(iFinishedRecipeConsumer);
         makeInfiniwireRecipes(iFinishedRecipeConsumer);
@@ -41,11 +41,11 @@ public class RecipeGenerator extends RecipeProvider
     }
 
     private void makeDyeingWireRecipe(Consumer<FinishedRecipe> iFinishedRecipeConsumer, ItemLike result,
-                                      Tag<Item> dyeTag)
+                                      TagKey<Item> dyeTag)
     {
         ResourceLocation resultLoc = result.asItem().getRegistryName();
-        ShapelessRecipeBuilder.shapeless(result, 8).requires(Ingredient.of(ObjectHolder.WIRES_TAG), 8)
-                .requires(dyeTag).unlockedBy("has_wire", RecipeProvider.has(ObjectHolder.WIRES_TAG))
+        ShapelessRecipeBuilder.shapeless(result, 8).requires(Ingredient.of(ObjectHolder.WIRES_TAG_KEY), 8)
+                .requires(dyeTag).unlockedBy("has_wire", RecipeProvider.has(ObjectHolder.WIRES_TAG_KEY))
                 .group(resultLoc.getPath())
                 .save(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
     }
@@ -61,12 +61,12 @@ public class RecipeGenerator extends RecipeProvider
     }
 
     private void makeDyeingInfiniwireRecipe(Consumer<FinishedRecipe> iFinishedRecipeConsumer, ItemLike result,
-                                            Tag<Item> dyeTag)
+                                            TagKey<Item> dyeTag)
     {
         ResourceLocation resultLoc = result.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapeless(result, 8)
-                .requires(Ingredient.of(ObjectHolder.INFINIWIRES_TAG), 8).requires(dyeTag)
-                .unlockedBy("has_infiniwire", RecipeProvider.has(ObjectHolder.INFINIWIRES_TAG))
+                .requires(Ingredient.of(ObjectHolder.INFINIWIRES_TAG_KEY), 8).requires(dyeTag)
+                .unlockedBy("has_infiniwire", RecipeProvider.has(ObjectHolder.INFINIWIRES_TAG_KEY))
                 .group(resultLoc.getPath())
                 .save(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
     }
