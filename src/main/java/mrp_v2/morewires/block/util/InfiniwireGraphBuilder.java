@@ -1,8 +1,8 @@
 package mrp_v2.morewires.block.util;
 
 import mrp_v2.morewires.block.InfiniwireBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
@@ -274,11 +274,10 @@ public class InfiniwireGraphBuilder
             {
                 return true;
             }
-            if (!(o instanceof Connection))
+            if (!(o instanceof Connection other))
             {
                 return false;
             }
-            Connection other = (Connection) o;
             boolean equalsPositions = a.equals(other.a) && b.equals(other.b) || a.equals(other.b) && b.equals(other.a);
             return equalsPositions && connectionType == other.connectionType;
         }

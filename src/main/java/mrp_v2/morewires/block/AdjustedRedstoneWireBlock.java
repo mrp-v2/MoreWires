@@ -1,20 +1,20 @@
 package mrp_v2.morewires.block;
 
+import com.mojang.math.Vector3f;
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.state.properties.RedstoneSide;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RedstoneSide;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
+public class AdjustedRedstoneWireBlock extends RedStoneWireBlock
 {
     private static final HashMap<AdjustedRedstoneWireBlock, HashMap<Integer, Pair<Integer, Vector3f>>>
             blockAndStrengthToColorMap = new HashMap<>();
@@ -55,9 +55,9 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         HashMap<Integer, Pair<Integer, Vector3f>> colors = new HashMap<>();
         for (int i = 0; i <= 15; i++)
         {
-            Vector3f RGBColorVecF = RedstoneWireBlock.COLORS[i];
-            Vector3i RGBColorVecI =
-                    new Vector3i(RGBColorVecF.x() * 255, RGBColorVecF.y() * 255, RGBColorVecF.z() * 255);
+            Vector3f RGBColorVecF = RedStoneWireBlock.COLORS[i];
+            Vec3i RGBColorVecI =
+                    new Vec3i(RGBColorVecF.x() * 255, RGBColorVecF.y() * 255, RGBColorVecF.z() * 255);
             float[] hsb = Color.RGBtoHSB(RGBColorVecI.getX(), RGBColorVecI.getY(), RGBColorVecI.getZ(), null);
             hsb[0] += hueChange;
             if (hsb[0] > 1)
@@ -87,13 +87,13 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return redstoneWires.contains(block);
     }
 
-    public AdjustedRedstoneItem createBlockItem(ITag<Item> dyeTag)
+    public AdjustedRedstoneItem createBlockItem(Tag<Item> dyeTag)
     {
-        return new AdjustedRedstoneItem(this, new Item.Properties().tab(ItemGroup.TAB_REDSTONE), dyeTag);
+        return new AdjustedRedstoneItem(this, new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE), dyeTag);
     }
 
     @Override
-    protected RedstoneSide getConnectingSide(IBlockReader reader, BlockPos pos, Direction direction,
+    protected RedstoneSide getConnectingSide(BlockGetter reader, BlockPos pos, Direction direction,
             boolean nonNormalCubeAbove)
     {
         BlockPos offsetPos = pos.relative(direction);
@@ -118,7 +118,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     }
 
     @Override
-    protected int calculateTargetStrength(World world, BlockPos pos)
+    protected int calculateTargetStrength(Level world, BlockPos pos)
     {
         globalCanProvidePower = false;
         int i = world.getBestNeighborSignal(pos);
@@ -146,13 +146,13 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
     }
 
     @Override
-    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getDirectSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side)
     {
         return !globalCanProvidePower ? 0 : blockState.getSignal(blockAccess, pos, side);
     }
 
     @Override
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side)
     {
         if (globalCanProvidePower && side != Direction.DOWN)
         {
@@ -179,7 +179,8 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         return globalCanProvidePower;
     }
 
-    @Override public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
+    @Override
+    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand)
     {
         int i = stateIn.getValue(POWER);
         if (i != 0)
@@ -208,7 +209,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         }
     }
 
-    protected boolean canThisConnectTo(BlockState blockState, IBlockReader world, BlockPos pos,
+    protected boolean canThisConnectTo(BlockState blockState, BlockGetter world, BlockPos pos,
             @Nullable Direction side)
     {
         if (blockState.is(this))
@@ -219,6 +220,6 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock
         {
             return false;
         }
-        return RedstoneWireBlock.canConnectTo(blockState, world, pos, side);
+        return RedStoneWireBlock.canConnectTo(blockState, world, pos, side);
     }
 }

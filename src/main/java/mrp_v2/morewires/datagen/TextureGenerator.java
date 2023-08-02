@@ -3,7 +3,7 @@ package mrp_v2.morewires.datagen;
 import mrp_v2.morewires.MoreWires;
 import mrp_v2.mrplibrary.datagen.providers.TextureProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.Supplier;

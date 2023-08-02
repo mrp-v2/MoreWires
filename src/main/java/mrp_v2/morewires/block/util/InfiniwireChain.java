@@ -1,9 +1,9 @@
 package mrp_v2.morewires.block.util;
 
 import mrp_v2.morewires.block.InfiniwireBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class InfiniwireChain
         this.block = block;
     }
 
-    void update(World world)
+    void update(Level world)
     {
         int powerFromChains = getPowerFromRelevantChains();
         int powerFromWorld = getUpdatedBlockPower(world);
@@ -32,7 +32,7 @@ public class InfiniwireChain
         update(oldPower, newPower, world);
     }
 
-    void update(int oldPower, int newPower, World world)
+    void update(int oldPower, int newPower, Level world)
     {
         if (newPower != oldPower)
         {
@@ -78,7 +78,7 @@ public class InfiniwireChain
         return power;
     }
 
-    int getUpdatedBlockPower(World world)
+    int getUpdatedBlockPower(Level world)
     {
         return InfiniwireBlock.getStrongestNonWireSignal(world, positions.keySet());
     }

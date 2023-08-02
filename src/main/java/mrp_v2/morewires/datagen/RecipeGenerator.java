@@ -4,13 +4,13 @@ import mrp_v2.morewires.item.AdjustedRedstoneItem;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.mrplibrary.datagen.providers.RecipeProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -26,13 +26,13 @@ public class RecipeGenerator extends RecipeProvider
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
+    protected void buildShapelessRecipes(Consumer<FinishedRecipe> iFinishedRecipeConsumer)
     {
         makeWireRecipes(iFinishedRecipeConsumer);
         makeInfiniwireRecipes(iFinishedRecipeConsumer);
     }
 
-    private void makeWireRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
+    private void makeWireRecipes(Consumer<FinishedRecipe> iFinishedRecipeConsumer)
     {
         for (RegistryObject<AdjustedRedstoneItem> item : ObjectHolder.WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE.values())
         {
@@ -40,8 +40,8 @@ public class RecipeGenerator extends RecipeProvider
         }
     }
 
-    private void makeDyeingWireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
-            ITag<Item> dyeTag)
+    private void makeDyeingWireRecipe(Consumer<FinishedRecipe> iFinishedRecipeConsumer, ItemLike result,
+                                      Tag<Item> dyeTag)
     {
         ResourceLocation resultLoc = result.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapeless(result, 8).requires(Ingredient.of(ObjectHolder.WIRES_TAG), 8)
@@ -50,7 +50,7 @@ public class RecipeGenerator extends RecipeProvider
                 .save(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
     }
 
-    private void makeInfiniwireRecipes(Consumer<IFinishedRecipe> iFinishedRecipeConsumer)
+    private void makeInfiniwireRecipes(Consumer<FinishedRecipe> iFinishedRecipeConsumer)
     {
         for (String color : ObjectHolder.COLORS.keySet())
         {
@@ -60,8 +60,8 @@ public class RecipeGenerator extends RecipeProvider
         }
     }
 
-    private void makeDyeingInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
-            ITag<Item> dyeTag)
+    private void makeDyeingInfiniwireRecipe(Consumer<FinishedRecipe> iFinishedRecipeConsumer, ItemLike result,
+                                            Tag<Item> dyeTag)
     {
         ResourceLocation resultLoc = result.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapeless(result, 8)
@@ -71,8 +71,8 @@ public class RecipeGenerator extends RecipeProvider
                 .save(iFinishedRecipeConsumer, modLoc(DYEING_ID + "/" + resultLoc.getPath()));
     }
 
-    private void makeDyedInfiniwireRecipe(Consumer<IFinishedRecipe> iFinishedRecipeConsumer, IItemProvider result,
-            IItemProvider ingredient)
+    private void makeDyedInfiniwireRecipe(Consumer<FinishedRecipe> iFinishedRecipeConsumer, ItemLike result,
+                                          ItemLike ingredient)
     {
         ShapelessRecipeBuilder.shapeless(result, 8).requires(ingredient, 8)
                 .requires(Tags.Items.INGOTS_IRON).unlockedBy("has_wire", RecipeProvider.has(ingredient))

@@ -3,10 +3,10 @@ package mrp_v2.morewires.client.util;
 import mrp_v2.morewires.MoreWires;
 import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.util.ObjectHolder;
-import net.minecraft.block.Block;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +27,7 @@ public class EventHandler
         blockObjects.addAll(ObjectHolder.WIRE_BLOCKS.values());
         for (RegistryObject<? extends Block> blockObject : blockObjects)
         {
-            RenderTypeLookup.setRenderLayer(blockObject.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(blockObject.get(), RenderType.cutout());
         }
     }
 
@@ -41,7 +41,7 @@ public class EventHandler
         {
             blocks.add(blockObject.get());
         }
-        IBlockColor colorer =
+        BlockColor colorer =
                 (blockState, iBlockDisplayReader, blockPos, tint) -> AdjustedRedstoneWireBlock.getColor(blockState);
         event.getBlockColors().register(colorer, blocks.toArray(new Block[0]));
     }

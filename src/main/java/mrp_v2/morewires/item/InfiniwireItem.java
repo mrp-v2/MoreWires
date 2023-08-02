@@ -1,13 +1,13 @@
 package mrp_v2.morewires.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 public class InfiniwireItem extends AdjustedRedstoneItem
 {
-    public InfiniwireItem(Block blockIn, Properties builder, ITag<Item> dyeTag)
+    public InfiniwireItem(Block blockIn, Properties builder, Tag<Item> dyeTag)
     {
         super(blockIn, builder, dyeTag);
     }

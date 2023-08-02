@@ -5,11 +5,11 @@ import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
 import mrp_v2.morewires.item.InfiniwireItem;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -33,7 +33,7 @@ public class ObjectHolder
     public static final HashMap<String, RegistryObject<AdjustedRedstoneItem>> WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE;
     public static final HashMap<String, RegistryObject<InfiniwireBlock>> INFINIWIRE_BLOCKS;
     public static final HashMap<String, RegistryObject<InfiniwireItem>> INFINIWIRE_BLOCK_ITEMS;
-    public static final HashMap<String, Pair<Float, ITag<Item>>> COLORS = new HashMap<>();
+    public static final HashMap<String, Pair<Float, Tag<Item>>> COLORS = new HashMap<>();
     public static final Tags.IOptionalNamedTag<Item> WIRES_TAG =
             ItemTags.createOptional(new ResourceLocation(MoreWires.ID, "wires"));
     public static final Tags.IOptionalNamedTag<Item> INFINIWIRES_TAG =

@@ -5,10 +5,10 @@ import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.mrplibrary.datagen.providers.BlockStateProvider;
-import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.properties.RedstoneSide;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.state.properties.RedstoneSide;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -77,36 +77,36 @@ public class BlockStateGenerator extends BlockStateProvider
         this.getMultipartBuilder(wireBasedBlock)
                 // no connections or connections on different axes
                 .part().modelFile(dotModel).addModel().useOr().nestedGroup()
-                .condition(RedstoneWireBlock.NORTH, RedstoneSide.NONE)
-                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.NONE)
-                .condition(RedstoneWireBlock.EAST, RedstoneSide.NONE)
-                .condition(RedstoneWireBlock.WEST, RedstoneSide.NONE).end().nestedGroup().nestedGroup().useOr()
-                .condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP)
-                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP).endNestedGroup().nestedGroup()
-                .useOr().condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP)
-                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).endNestedGroup().end().end()
+                .condition(RedStoneWireBlock.NORTH, RedstoneSide.NONE)
+                .condition(RedStoneWireBlock.SOUTH, RedstoneSide.NONE)
+                .condition(RedStoneWireBlock.EAST, RedstoneSide.NONE)
+                .condition(RedStoneWireBlock.WEST, RedstoneSide.NONE).end().nestedGroup().nestedGroup().useOr()
+                .condition(RedStoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP)
+                .condition(RedStoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP).endNestedGroup().nestedGroup()
+                .useOr().condition(RedStoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP)
+                .condition(RedStoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).endNestedGroup().end().end()
                 //
                 .part().modelFile(side0Model).addModel()
-                .condition(RedstoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                .condition(RedStoneWireBlock.NORTH, RedstoneSide.SIDE, RedstoneSide.UP).end()
                 //
                 .part().modelFile(sideAlt0Model).addModel()
-                .condition(RedstoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                .condition(RedStoneWireBlock.SOUTH, RedstoneSide.SIDE, RedstoneSide.UP).end()
                 //
                 .part().modelFile(sideAlt1Model).rotationY(270).addModel()
-                .condition(RedstoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                .condition(RedStoneWireBlock.EAST, RedstoneSide.SIDE, RedstoneSide.UP).end()
                 //
                 .part().modelFile(side1Model).rotationY(270).addModel()
-                .condition(RedstoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).end()
+                .condition(RedStoneWireBlock.WEST, RedstoneSide.SIDE, RedstoneSide.UP).end()
                 //
-                .part().modelFile(upModel).addModel().condition(RedstoneWireBlock.NORTH, RedstoneSide.UP).end()
+                .part().modelFile(upModel).addModel().condition(RedStoneWireBlock.NORTH, RedstoneSide.UP).end()
                 //
-                .part().modelFile(upModel).rotationY(90).addModel().condition(RedstoneWireBlock.EAST, RedstoneSide.UP)
+                .part().modelFile(upModel).rotationY(90).addModel().condition(RedStoneWireBlock.EAST, RedstoneSide.UP)
                 .end()
                 //
-                .part().modelFile(upModel).rotationY(180).addModel().condition(RedstoneWireBlock.SOUTH, RedstoneSide.UP)
+                .part().modelFile(upModel).rotationY(180).addModel().condition(RedStoneWireBlock.SOUTH, RedstoneSide.UP)
                 .end()
                 //
-                .part().modelFile(upModel).rotationY(270).addModel().condition(RedstoneWireBlock.WEST, RedstoneSide.UP)
+                .part().modelFile(upModel).rotationY(270).addModel().condition(RedStoneWireBlock.WEST, RedstoneSide.UP)
                 .end();
     }
 

@@ -27,6 +27,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'com.matthewprenger.cursegradle'
+
 String mcVersion = version.split('-')[0]
 if (forgeVersion == 'latest' || forgeVersion == 'recommended')
 {
@@ -46,6 +47,8 @@ if (minimumForgeVersion == 'none')
 String homepageURL = "https://www.curseforge.com/minecraft/mc-mods/${modDisplayName.replace(' ', '-').toLowerCase()}"
 String issuesURL = "${homepageURL}/issues"
 String updateURL = "https://raw.githubusercontent.com/mrp-v2/${capitalizedModId}/master/update.json"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 class GithubDependency
 {
