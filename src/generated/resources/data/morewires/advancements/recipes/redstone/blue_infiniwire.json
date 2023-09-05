@@ -1,26 +1,23 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "morewires:blue_infiniwire"
-    ]
-  },
   "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "morewires:blue_infiniwire"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
     "has_wire": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "morewires:blue_wire"
+            "items": [
+              "morewires:blue_wire"
+            ]
           }
         ]
-      }
-    },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "morewires:blue_infiniwire"
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
@@ -28,5 +25,10 @@
       "has_wire",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "morewires:blue_infiniwire"
+    ]
+  }
 }

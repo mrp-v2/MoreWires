@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Random;
 
 public class AdjustedRedstoneWireBlock extends RedStoneWireBlock {
     private static final HashMap<AdjustedRedstoneWireBlock, HashMap<Integer, Pair<Integer, Vec3>>>
@@ -50,7 +49,7 @@ public class AdjustedRedstoneWireBlock extends RedStoneWireBlock {
         for (int i = 0; i <= 15; i++) {
             Vec3 RGBColorVecF = RedStoneWireBlock.COLORS[i];
             Vec3i RGBColorVecI =
-                    new Vec3i(RGBColorVecF.x() * 255, RGBColorVecF.y() * 255, RGBColorVecF.z() * 255);
+                    new Vec3i((int) (RGBColorVecF.x() * 255), (int) (RGBColorVecF.y() * 255), (int) (RGBColorVecF.z() * 255));
             float[] hsb = Color.RGBtoHSB(RGBColorVecI.getX(), RGBColorVecI.getY(), RGBColorVecI.getZ(), null);
             hsb[0] += hueChange;
             if (hsb[0] > 1) {
@@ -77,7 +76,7 @@ public class AdjustedRedstoneWireBlock extends RedStoneWireBlock {
     }
 
     public AdjustedRedstoneItem createBlockItem(TagKey<Item> dyeTag) {
-        return new AdjustedRedstoneItem(this, new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE), dyeTag);
+        return new AdjustedRedstoneItem(this, new Item.Properties(), dyeTag);
     }
 
     @Override
@@ -150,7 +149,7 @@ public class AdjustedRedstoneWireBlock extends RedStoneWireBlock {
     }
 
     @Override
-    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
+    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource rand) {
         int i = stateIn.getValue(POWER);
         if (i != 0) {
             for (Direction direction : Direction.Plane.HORIZONTAL) {

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
   "group": "yellow_wire",
   "ingredients": [
     {
@@ -31,7 +32,7 @@
     }
   ],
   "result": {
-    "item": "morewires:yellow_wire",
-    "count": 8
+    "count": 8,
+    "item": "morewires:yellow_wire"
   }
 }

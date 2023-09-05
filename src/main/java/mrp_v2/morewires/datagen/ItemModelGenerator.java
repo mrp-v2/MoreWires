@@ -3,18 +3,19 @@ package mrp_v2.morewires.datagen;
 import mrp_v2.morewires.item.AdjustedRedstoneItem;
 import mrp_v2.morewires.item.InfiniwireItem;
 import mrp_v2.morewires.util.ObjectHolder;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ItemModelGenerator extends ItemModelProvider
 {
-    public ItemModelGenerator(DataGenerator generator, String modId, ExistingFileHelper existingFileHelper)
+    public ItemModelGenerator(PackOutput output, String modId, ExistingFileHelper existingFileHelper)
     {
-        super(generator, modId, existingFileHelper);
+        super(output, modId, existingFileHelper);
     }
 
     @Override protected void registerModels()
@@ -31,18 +32,18 @@ public class ItemModelGenerator extends ItemModelProvider
 
     protected void registerItemModel(Item item)
     {
-        this.registerItemModel(item, modLoc("item/" + item.getRegistryName().getPath()));
+        this.registerItemModel(item, modLoc("item/" + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
 
     protected void registerItemModel(Item item, ResourceLocation texture)
     {
-        super.singleTexture(item.getRegistryName().getPath(), new ResourceLocation("item/generated"), "layer0",
+        super.singleTexture(ForgeRegistries.ITEMS.getKey(item).getPath(), new ResourceLocation("item/generated"), "layer0",
                 texture);
     }
 
     private void registerInfiniwireItemModel(Item item)
     {
-        String path = item.getRegistryName().getPath().replace("infini", "");
+        String path = ForgeRegistries.ITEMS.getKey(item).getPath().replace("infini", "");
         if (path.contains("red_wire"))
         {
             this.registerItemModel(item, new ResourceLocation("minecraft:item/redstone"));

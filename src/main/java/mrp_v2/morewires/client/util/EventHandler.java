@@ -6,9 +6,11 @@ import mrp_v2.morewires.util.ObjectHolder;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -31,7 +33,8 @@ public class EventHandler
         }
     }
 
-    @SubscribeEvent public static void registerBlockColors(final ColorHandlerEvent.Block event)
+    @SubscribeEvent
+    public static void registerBlockColors(final RegisterColorHandlersEvent.Block event)
     {
         List<RegistryObject<? extends Block>> blockObjects = new ArrayList<>();
         blockObjects.addAll(ObjectHolder.INFINIWIRE_BLOCKS.values());
@@ -44,5 +47,13 @@ public class EventHandler
         BlockColor colorer =
                 (blockState, iBlockDisplayReader, blockPos, tint) -> AdjustedRedstoneWireBlock.getColor(blockState);
         event.getBlockColors().register(colorer, blocks.toArray(new Block[0]));
+    }
+
+    @SubscribeEvent
+    public static void addItemsToTab(CreativeModeTabEvent.BuildContents event) {
+        if (event.getTab() == CreativeModeTabs.REDSTONE_BLOCKS) {
+            ObjectHolder.INFINIWIRE_BLOCK_ITEMS.values().forEach(event::accept);
+            ObjectHolder.WIRE_BLOCK_ITEMS.values().forEach(event::accept);
+        }
     }
 }

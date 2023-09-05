@@ -4,15 +4,16 @@ import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.mrplibrary.datagen.providers.LanguageProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class EN_USTranslationGenerator extends LanguageProvider
 {
-    public EN_USTranslationGenerator(DataGenerator gen, String modid)
+    public EN_USTranslationGenerator(PackOutput output, String modid)
     {
-        super(gen, modid, "en_us");
+        super(output, modid, "en_us");
     }
 
     @Override protected void addTranslations()
@@ -29,7 +30,7 @@ public class EN_USTranslationGenerator extends LanguageProvider
 
     protected void addWireTranslation(Block block)
     {
-        String name = block.getRegistryName().getPath().replace("_", " ");
+        String name = ForgeRegistries.BLOCKS.getKey(block).getPath().replace("_", " ");
         for (int i = 0; i < name.length() - 1; i++)
         {
             if (i == 0)

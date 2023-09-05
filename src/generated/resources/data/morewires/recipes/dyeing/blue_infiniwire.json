@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
   "group": "blue_infiniwire",
   "ingredients": [
     {
@@ -31,7 +32,7 @@
     }
   ],
   "result": {
-    "item": "morewires:blue_infiniwire",
-    "count": 8
+    "count": 8,
+    "item": "morewires:blue_infiniwire"
   }
 }

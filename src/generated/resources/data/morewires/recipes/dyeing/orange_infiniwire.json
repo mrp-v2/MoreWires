@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
   "group": "orange_infiniwire",
   "ingredients": [
     {
@@ -31,7 +32,7 @@
     }
   ],
   "result": {
-    "item": "morewires:orange_infiniwire",
-    "count": 8
+    "count": 8,
+    "item": "morewires:orange_infiniwire"
   }
 }

@@ -5,7 +5,7 @@ import mrp_v2.morewires.block.AdjustedRedstoneWireBlock;
 import mrp_v2.morewires.block.InfiniwireBlock;
 import mrp_v2.morewires.util.ObjectHolder;
 import mrp_v2.mrplibrary.datagen.providers.BlockStateProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.properties.RedstoneSide;
@@ -20,9 +20,9 @@ public class BlockStateGenerator extends BlockStateProvider
 {
     protected ModelFile dotModel, upModel, side0Model, side1Model, sideAlt0Model, sideAlt1Model;
 
-    public BlockStateGenerator(DataGenerator gen, String modId, ExistingFileHelper exFileHelper)
+    public BlockStateGenerator(PackOutput output, String modId, ExistingFileHelper exFileHelper)
     {
-        super(gen, modId, exFileHelper);
+        super(output, modId, exFileHelper);
     }
 
     @Override protected void registerStatesAndModels()
