@@ -1,0 +1,13 @@
+// 1.19.4	2023-11-09T22:59:58.8651764	MoreWires/Block Loot Tables
+31b3f29e840dc4318c9894a2a980abe75d170a70 data\morewires\loot_tables\blocks\blue_infiniwire.json
+ac9b5c198d8d3c3bc19fcbca7e31200463b28ef7 data\morewires\loot_tables\blocks\orange_infiniwire.json
+debc72411c9ebdb7e0887cc3066511bf10f72405 data\morewires\loot_tables\blocks\green_infiniwire.json
+ad0e25c2b7455bef3789b6178d5af618e314dfdb data\morewires\loot_tables\blocks\pink_infiniwire.json
+c35e62c5123e2d00f91e389da833668db5ea0812 data\morewires\loot_tables\blocks\blue_wire.json
+14118aaa23d593bdb1f2b71e5a1571903b91d5a5 data\morewires\loot_tables\blocks\redstone_wire.json
+8f3d4a7086984f0491bbff74bf4cea8895cfecf1 data\morewires\loot_tables\blocks\yellow_wire.json
+b15e598046ce60ae5eac379580be1e6d82e4dfa3 data\morewires\loot_tables\blocks\yellow_infiniwire.json
+ce8c193964a284cd076d9b32c775b6e81dede999 data\morewires\loot_tables\blocks\green_wire.json
+776ca69fe1be3a787d1d1936c247522d1abbf02e data\morewires\loot_tables\blocks\red_infiniwire.json
+5c284a16fac9fcc090fe5f2f7fd627ff07fdab49 data\morewires\loot_tables\blocks\orange_wire.json
+f18cfc88588d0cb57e04778c58506fa530aea7c7 data\morewires\loot_tables\blocks\pink_wire.json

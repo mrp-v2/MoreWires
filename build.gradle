@@ -1,403 +1,112 @@
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import groovy.json.JsonSlurper
-
-buildscript {
-    repositories {
-        maven {
-            url = 'https://maven.minecraftforge.net'
-        }
-        maven {
-            url = 'https://plugins.gradle.org/m2'
-        }
-        jcenter()
-        mavenCentral()
-        maven {
-            url = 'https://repo.spongepowered.org/repository/maven-public'
-        }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        classpath group: 'gradle.plugin.com.matthewprenger', name: 'CurseGradle', version: '1.4.0'
-    }
-}
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'maven-publish'
-apply plugin: 'com.matthewprenger.cursegradle'
-
-String mcVersion = version.split('-')[0]
-if (forgeVersion == 'latest' || forgeVersion == 'recommended') {
-    println 'Grabbing ' + forgeVersion + ' forge version for MC ' + mcVersion
-    forgeVersion = new JsonSlurper().
-            parse(new URL('https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json')).
-            get('promos').get(mcVersion + '-' + forgeVersion)
-    assert forgeVersion != null
-}
-String capitalizedModId = modDisplayName.replace(' ', '')
-String modId = capitalizedModId.toLowerCase()
-String forgeMajor = forgeVersion.split('\\.')[0]
-if (minimumForgeVersion == 'none') {
-    minimumForgeVersion = forgeMajor
-}
-String homepageURL = "https://www.curseforge.com/minecraft/mc-mods/${modDisplayName.replace(' ', '-').toLowerCase()}"
-String issuesURL = "${homepageURL}/issues"
-String updateURL = "https://raw.githubusercontent.com/mrp-v2/${capitalizedModId}/master/update.json"
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-class GithubDependency {
-    public final String githubAddress
-    public final String curseforgeSlug
-    public final String apiVersion
-    public final String patchVersion
-    public final String nextAPIVersion
-    public final String modId
-    public final String modNamespace
-
-    GithubDependency(String data) {
-        int seperator1 = data.indexOf('|'), seperator2 = data.indexOf(':'), seperator3 = data.indexOf(',')
-        githubAddress = data.substring(0, seperator1)
-        curseforgeSlug = data.substring(seperator1 + 1, seperator2)
-        apiVersion = data.substring(seperator2 + 1, seperator3)
-        patchVersion = data.substring(seperator3).replace(',', '.')
-        String apiVersionMinusMC = apiVersion.substring(apiVersion.indexOf('-') + 1)
-        nextAPIVersion =
-                apiVersion.substring(0, apiVersion.indexOf('-')) + '-' + apiVersionMinusMC.split('\\.')[0] + '.' +
-                        ((apiVersionMinusMC.split('\\.')[1] as int) + 1)
-        modId = githubAddress.substring(githubAddress.lastIndexOf('/') + 1).toLowerCase()
-        modNamespace = githubAddress.substring(0, githubAddress.indexOf('/')).replace('-', '_')
-    }
-
-    static List<GithubDependency> makeGithubDependencyList(String githubDependencies) {
-        if (!githubDependencies.contains(';')) {
-            return new ArrayList<GithubDependency>()
-        }
-        String[] dependenciesArray = githubDependencies.split(';')
-        List<GithubDependency> dependencyList = new ArrayList<>()
-        for (String dependencyStr : dependenciesArray) {
-            dependencyList.add(new GithubDependency(dependencyStr))
-        }
-        return dependencyList
-    }
+plugins {
+	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'maven-publish'
 }
 
-List<GithubDependency> githubDependencyList = GithubDependency.makeGithubDependencyList(githubDependencies)
-for (GithubDependency dependency : githubDependencyList) {
-    println('Added GitHub dependency: ' + dependency.githubAddress + ", Version: " + dependency.apiVersion +
-            dependency.patchVersion + ", Next API Version: " + dependency.nextAPIVersion)
-}
+version = project.mod_version
+group = project.maven_group
 
-archivesBaseName = modId
-group = "${author}.${archivesBaseName}"
-boolean usesMixins = file("src/main/resources/${modId}.mixins.json").exists()
-File secretFile = file '../secrets.json'
-
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' +
-        System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-println('Minecraft: ' + mcVersion + ' Forge: ' + forgeVersion + ' Mapping: ' + mapping + ' Mod: ' + version)
-
-sourceSets.main.resources {
-    srcDirs += 'src/generated/resources'
-}
-
-minecraft {
-    mappings channel: mapping.split('\\|')[0], version: mapping.split('\\|')[1]
-    String accessTransformerPath = 'src/main/resources/META-INF/accesstransformer.cfg'
-    File accessTransformerFile = file(accessTransformerPath)
-    if (accessTransformerFile.exists()) {
-        println 'Access transformer configuration found at ' + accessTransformerPath
-        accessTransformer = accessTransformerFile
-    }
-    runs {
-        client {
-            if (usesMixins) {
-                property 'mixin.env.disableRefMap', 'true'
-                arg "-mixin.config=" + archivesBaseName + ".mixins.json"
-            }
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                mod {
-                    source sourceSets.main
-                }
-            }
-        }
-        server {
-            if (usesMixins) {
-                property 'mixin.env.disableRefMap', 'true'
-                arg "-mixin.config=" + archivesBaseName + ".mixins.json"
-            }
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                mod {
-                    source sourceSets.main
-                }
-            }
-        }
-        data {
-            if (usesMixins) {
-                property 'mixin.env.disableRefMap', 'true'
-                arg "-mixin.config=" + archivesBaseName + ".mixins.json"
-            }
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            String[] tempArgs = ['--mod', modId, '--all', '--output', file('src/generated/resources/'), '--existing',
-                                 sourceSets.main.output.resourcesDir]
-            for (GithubDependency dependency : githubDependencyList) {
-                tempArgs += '--existing-mod'
-                tempArgs += dependency.modId
-            }
-            args tempArgs
-            mods {
-                mod {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+base {
+	archivesName = project.archives_base_name
 }
 
 repositories {
-    for (GithubDependency dependency : githubDependencyList) {
-        maven {
-            name = dependency.githubAddress
-            url = new URL('https://maven.pkg.github.com/' + dependency.githubAddress)
-            credentials {
-                username = 'mrp-v2'
-                if (secretFile.exists()) {
-                    password = new JsonSlurper().parse(secretFile).get('github-packages-token')
-                }
-            }
-        }
-    }
-    mavenLocal()
-    maven {
-        name = 'CurseMaven'
-        url = new URL('https://www.cursemaven.com')
-    }
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
 }
 
+loom {
+    splitEnvironmentSourceSets()
+
+	mods {
+		"morewires" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+    runs {
+		// This adds a new gradle task that runs the datagen API: "gradlew runDatagen"
+		datagen {
+			inherit server
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+			vmArg "-Dfabric-api.datagen.modid=morewires"
+ 
+			runDir "build/datagen"
+		}
+	}
+}
+
+// Add the generated resources to the main source set
+sourceSets {
+	main {
+		resources {
+			srcDirs += [
+					'src/main/generated'
+			]
+		}
+	}
+}
 dependencies {
-    minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
-    for (GithubDependency dependency : githubDependencyList) {
-        implementation fg.deobf(dependency.modNamespace + '.' + dependency.modId + ':' + dependency.modId + ':' +
-                dependency.apiVersion + dependency.patchVersion)
-    }
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	
+	// Uncomment the following line to enable the deprecated Fabric API modules. 
+	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
+
+	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
-    manifest {
-        Map<String, ?> map = new HashMap<>()
-        map.putAll('Specification-Title': archivesBaseName,
-                'Specification-Vendor': author,
-                'Specification-Version': '1', // We are version 1 of ourselves
-                'Implementation-Title': project.name,
-                'Implementation-Version': "${version}",
-                'Implementation-Vendor': author,
-                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"))
-        if (usesMixins) {
-            map.putAll('MixinConfigs': "${modId}.mixins.json")
-        }
-        attributes(map)
-    }
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}"}
+	}
 }
 
-jar.finalizedBy('reobfJar')
-
-processResources {
-    setDuplicatesStrategy(DuplicatesStrategy.INCLUDE)
-    String tempMCVersion = mcVersion
-    if (mcVersion == "1.16.5") {
-        tempMCVersion = "1.16.4"
-    }
-    inputs.property 'version', project.version
-    inputs.property 'modId', modId
-    inputs.property 'forgeMajor', forgeMajor
-    inputs.property 'minimumForgeVersion', minimumForgeVersion
-    inputs.property 'mcVersion', tempMCVersion
-    inputs.property 'homepageURL', homepageURL
-    inputs.property 'modDisplayName', modDisplayName
-    inputs.property 'capitalizedModId', capitalizedModId
-    inputs.property 'modDescription', modDescription
-    inputs.property 'author', author
-    inputs.property 'updateURL', updateURL
-    inputs.property 'issuesURL', issuesURL
-    String githubDependenciesData = ''
-    for (GithubDependency dependency : githubDependencyList) {
-        githubDependenciesData +=
-                "[[dependencies.${modId}]]\n" + "    modId=\"${dependency.modId}\"\n" + '    mandatory=true\n' +
-                        "    versionRange=\"[${dependency.apiVersion},${dependency.nextAPIVersion})\"\n" +
-                        '    ordering="AFTER"\n' + '    side="BOTH"\n'
-    }
-    inputs.property 'githubDependencies', githubDependenciesData
-    String[] files = new String[2]
-    files[0] = 'META-INF/mods.toml'
-    files[1] = 'pack.mcmeta'
-    from(sourceSets.main.resources.srcDirs) {
-        include files
-        Map<String, ?> properties = new HashMap<>()
-        properties.putAll('version': project.version, 'modId': modId, 'forgeMajor': forgeMajor,
-                'minimumForgeVersion': minimumForgeVersion, 'mcVersion': tempMCVersion,
-                'homepageURL': homepageURL, 'modDisplayName': modDisplayName, 'capitalizedModId': capitalizedModId,
-                'modDescription': modDescription, 'author': author, 'updateURL': updateURL, 'issuesURL': issuesURL,
-                'githubDependencies': githubDependenciesData)
-        expand properties
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude files
-    }
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    classifier = 'sources'
-}
-
+// configure the maven publication
 publishing {
-    repositories {
-        maven {
-            name = 'GitHubPackages'
-            url = uri('https://maven.pkg.github.com/mrp-v2/' + capitalizedModId)
-            credentials {
-                username = 'mrp-v2'
-                if (secretFile.exists()) {
-                    password = new JsonSlurper().parse(secretFile).get('github-packages-token')
-                }
-            }
-        }
-    }
-    publications {
-        gpr(MavenPublication) {
-            artifactId modId
-            artifact jar
-            artifact sourcesJar
-        }
-    }
-}
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
 
-task regenerateUpdateJson {
-    doLast {
-        String updateJsonLocation = './update.json'
-        println 'Regenerating update.json from version: ' + version
-        JsonObject newUpdateJson = new JsonObject()
-        newUpdateJson.addProperty('homepage', homepageURL)
-        JsonObject promos = new JsonObject()
-        newUpdateJson.add('promos', promos)
-        File oldUpdateJsonFile = new File(updateJsonLocation)
-        String latestTargetMCVersion = mcVersion
-        if (oldUpdateJsonFile.exists()) {
-            JsonObject oldUpdateJson = new JsonParser().
-                    parse(new File(updateJsonLocation).text).getAsJsonObject().
-                    getAsJsonObject('promos')
-            for (Map.Entry<String, JsonElement> entry : oldUpdateJson.entrySet()) {
-                promos.addProperty(entry.key, entry.value.asString)
-                if (entry.key.equals("latest")) {
-                    latestTargetMCVersion = entry.value.asString.substring(0, entry.value.asString.indexOf("-"))
-                }
-            }
-        }
-        promos.addProperty("${mcVersion}-recommended", (String) version)
-        promos.addProperty("${mcVersion}-latest", (String) version)
-        if (mcVersion >= latestTargetMCVersion) {
-            promos.addProperty("recommended", (String) version)
-            promos.addProperty("latest", (String) version)
-        }
-        String jsonString = new GsonBuilder().setPrettyPrinting().create().toJson(newUpdateJson)
-        new File(updateJsonLocation).text = jsonString
-    }
-}
-
-if (usesMixins) {
-    apply plugin: 'org.spongepowered.mixin'
-
-    mixin {
-        add sourceSets.main, "${modId}.refmap.json"
-    }
-}
-
-task ensureCleanWorkingTree {
-    doFirst {
-        Tuple2<String, String> statusResult = doCommand("git", "status")
-        if (!statusResult.first.contains("working tree clean")) {
-            throw new IllegalStateException("The working tree isn't clean")
-        }
-    }
-    mustRunAfter ':regenerateUpdateJson'
-}
-
-task ensureTagExists {
-    doFirst {
-        Tuple2<String, String> tagResult = doCommand("git", "tag", "$version")
-        if (!tagResult.second.empty) {
-            if (tagResult.second.contains("already exists")) {
-                return
-            }
-            throw new IllegalStateException("Error creating new tag")
-        }
-        throw new IllegalStateException("Tag created, rerun the task please")
-    }
-    mustRunAfter ':ensureCleanWorkingTree'
-}
-
-task publishToGithubAndCurseforge {
-    dependsOn ':regenerateUpdateJson'
-    dependsOn ':ensureCleanWorkingTree'
-    dependsOn ':ensureTagExists'
-    dependsOn ':publishGprPublicationToGitHubPackagesRepository'
-    dependsOn ':curseforge'
-}
-
-curseforge {
-    if (secretFile.exists()) {
-        apiKey = new JsonSlurper().parse(secretFile).get('curseforge-api-token')
-    }
-    project {
-        id = projectId
-        Tuple2<String, String> previousVersionResult =
-                doCommand('git', 'describe', '--tags', '--abbrev=0', "${version}^")
-        println('Previous Version: ' + previousVersionResult.first)
-        println('Error?: ' + previousVersionResult.second.trim())
-        Tuple2<String, String> changelogResult =
-                doCommand('git', 'log', '--pretty=format:"%s"', "${previousVersionResult.first}..${version}")
-        println('Changelog: ' + changelogResult.first)
-        println('Error?: ' + changelogResult.second.trim())
-        changelog = changelogResult.first
-        releaseType = 'release'
-        addGameVersion mcVersion
-        if (githubDependencyList.size() > 0) {
-            relations {
-                for (GithubDependency dependency : githubDependencyList) {
-                    requiredDependency dependency.curseforgeSlug
-                }
-            }
-        }
-    }
-    options {
-        debug = false
-        javaVersionAutoDetect = false
-        javaIntegration = true
-        forgeGradleIntegration = true
-    }
-}
-
-static Tuple2<String, String> doCommand(String... command) {
-    Process commandProcess = command.execute()
-    StringBuilder out = new StringBuilder(), error = new StringBuilder()
-    commandProcess.consumeProcessOutput(out, error)
-    commandProcess.waitFor()
-    return new Tuple2<>(out.toString().trim(), error.toString().trim())
-}
-
-tasks.getByName('publishGprPublicationToGitHubPackagesRepository').configure {
-    mustRunAfter ':ensureTagExists'
-}
-tasks.getByName('curseforge').configure {
-    mustRunAfter ':publishGprPublicationToGitHubPackagesRepository'
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
 }

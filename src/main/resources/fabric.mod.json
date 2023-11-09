@@ -1,0 +1,45 @@
+{
+	"schemaVersion": 1,
+	"id": "morewires",
+	"version": "${version}",
+	"name": "More Wires",
+	"description": "Adds colored redstone wire, and wires that don't decrease their signal strength.",
+	"authors": [
+		"mrp_v2",
+		"kotisoff"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/more-wires",
+		"sources": "https://github.com/mrp-v2/morewires"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/morewires/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.morewires.MoreWires"
+		],
+		"client": [
+			"com.morewires.MoreWiresClient"
+		],
+		"fabric-datagen": [
+			"com.morewires.MoreWiresDataGenerator"
+		]
+	},
+	"mixins": [
+		"morewires.mixins.json",
+		{
+			"config": "morewires.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.14.24",
+		"minecraft": "~1.19.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

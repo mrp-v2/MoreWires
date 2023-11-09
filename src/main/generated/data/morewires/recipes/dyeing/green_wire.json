@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "green_wire",
+  "ingredients": [
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "item": "minecraft:green_dye"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "morewires:green_wire"
+  }
+}

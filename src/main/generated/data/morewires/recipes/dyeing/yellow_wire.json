@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "yellow_wire",
+  "ingredients": [
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "tag": "morewires:wires"
+    },
+    {
+      "item": "minecraft:yellow_dye"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "morewires:yellow_wire"
+  }
+}

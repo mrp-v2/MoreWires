@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "red_infiniwire",
+  "ingredients": [
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "morewires:redstone"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "morewires:red_infiniwire"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "pink_infiniwire",
+  "ingredients": [
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "morewires:pink_wire"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "morewires:pink_infiniwire"
+  }
+}
