@@ -3,9 +3,13 @@
   "values": [
     "morewires:orange_wire",
     "morewires:yellow_wire",
-    "morewires:redstone",
+    "minecraft:redstone",
     "morewires:pink_wire",
     "morewires:green_wire",
-    "morewires:blue_wire"
+    "morewires:blue_wire",
+    {
+      "id": "minecraft:redstone",
+      "required": false
+    }
   ]
 }

@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class ObjectHolder {
     public static final HashMap<String, AdjustedRedstoneWireBlock> WIRE_BLOCKS;
     public static final HashMap<String, AdjustedRedstoneWireBlock> WIRE_BLOCKS_EXCLUDING_REDSTONE;
-    public static final HashMap<String, AdjustedRedstoneItem> WIRE_BLOCK_ITEMS;
+    public static final HashMap<String, Item> WIRE_BLOCK_ITEMS;
     public static final HashMap<String, AdjustedRedstoneItem> WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE;
     public static final HashMap<String, InfiniwireBlock> INFINIWIRE_BLOCKS;
     public static final HashMap<String, InfiniwireItem> INFINIWIRE_BLOCK_ITEMS;
@@ -58,10 +58,8 @@ public class ObjectHolder {
         }
         String red = "red";
         COLORS.put(red, Pair.of(Color.rgbToRgbInt(new Vec3d(255,0,0)),Items.RED_DYE));
-        WIRE_BLOCKS.put(red, Registry
-                .register(Registries.BLOCK, new Identifier(MODID,"redstone_wire"), new AdjustedRedstoneWireBlock(COLORS.get(red).getLeft())));
-        WIRE_BLOCK_ITEMS.put(red, Registry
-                .register(Registries.ITEM,new Identifier(MODID,"redstone"), WIRE_BLOCKS.get(red).createBlockItem(COLORS.get(red).getRight()))); // TODO: Somehow replace vanilla redstone with this one
+        WIRE_BLOCKS.put(red, (AdjustedRedstoneWireBlock) Blocks.REDSTONE_WIRE);
+        WIRE_BLOCK_ITEMS.put(red, Items.REDSTONE);
         INFINIWIRE_BLOCKS = new HashMap<>(COLORS.size());
         INFINIWIRE_BLOCK_ITEMS = new HashMap<>(COLORS.size());
         for (String color : COLORS.keySet()) {
@@ -72,7 +70,4 @@ public class ObjectHolder {
         }
 
     }
-
-    // а можно я буду настраиватьэто злоебучее свечение с помощью присутствия/отсутствия редстоуновых ламп под проводом?
-    //а ещё можно пиздыцкнуть такой блок который будет вести себя точно так же как и binary wire но его можно будет передвигать поршнем
 }

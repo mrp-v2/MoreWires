@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +25,11 @@ public class MoreWires implements ModInitializer {
 
 		//LOGGER.info("Hello Fabric world!");
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> {
-			WIRE_BLOCK_ITEMS.values().forEach(content::add);
-			INFINIWIRE_BLOCK_ITEMS.values().forEach(content::add);
+			content.add(INFINIWIRE_BLOCK_ITEMS.get("red"));
+			for(String color : WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE.keySet()){
+				content.add(WIRE_BLOCK_ITEMS.get(color));
+				content.add(INFINIWIRE_BLOCK_ITEMS.get(color));
+			}
 		});
 	}
 }

@@ -1,19 +1,16 @@
 package com.morewires.block;
 
 import com.google.common.collect.Sets;
-import com.morewires.MoreWires;
 import com.morewires.item.AdjustedRedstoneItem;
 import com.morewires.util.Color;
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.enums.WireConnection;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -40,7 +37,7 @@ public class AdjustedRedstoneWireBlock extends RedstoneWireBlock {
         this(Settings.copy(Blocks.REDSTONE_WIRE), RGBInt);
     }
 
-    protected AdjustedRedstoneWireBlock(Settings settings, int RGBInt) {
+    public AdjustedRedstoneWireBlock(Settings settings, int RGBInt) {
         super(settings);
         redstoneWires.add(this);
         blockAndStrengthToColorMap.put(this, calculateColors(RGBInt));

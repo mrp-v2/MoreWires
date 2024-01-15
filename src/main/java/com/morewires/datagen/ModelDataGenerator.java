@@ -56,7 +56,7 @@ public class ModelDataGenerator extends FabricModelProvider {
                     )
             );
         }
-        for(Block block : WIRE_BLOCKS.values()){
+        for(Block block : WIRE_BLOCKS_EXCLUDING_REDSTONE.values()){
             blockStateModelGenerator.blockStateCollector.accept(MultipartBlockStateSupplier.create(block)
                     .with(When.anyOf(
                                     When.create().set(Properties.EAST_WIRE_CONNECTION, WireConnection.NONE).set(Properties.NORTH_WIRE_CONNECTION, WireConnection.NONE).set(Properties.SOUTH_WIRE_CONNECTION, WireConnection.NONE).set(Properties.WEST_WIRE_CONNECTION, WireConnection.NONE),
@@ -101,8 +101,8 @@ public class ModelDataGenerator extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator){
-        for(String key : WIRE_BLOCK_ITEMS.keySet()){
-            itemModelGenerator.register(WIRE_BLOCK_ITEMS.get(key), item("infiniwire"));
+        for(String key : WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE.keySet()){
+            itemModelGenerator.register(WIRE_BLOCK_ITEMS_EXCLUDING_REDSTONE.get(key), item("infiniwire"));
         }
         for(String key : INFINIWIRE_BLOCK_ITEMS.keySet()){
             itemModelGenerator.register(INFINIWIRE_BLOCK_ITEMS.get(key), item("infiniwire"));

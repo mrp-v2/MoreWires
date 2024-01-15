@@ -36,8 +36,7 @@ public class RecipeGenerator extends FabricRecipeProvider {
         }
     }
 
-    private void makeDyeingWireRecipe(Consumer<RecipeJsonProvider> iFinishedRecipeConsumer, Item result,
-                                      Item dye)
+    private void makeDyeingWireRecipe(Consumer<RecipeJsonProvider> iFinishedRecipeConsumer, Item result, Item dye)
     {
         Identifier resultLoc = Registries.ITEM.getId(result);
         ShapelessRecipeJsonBuilder.create(RecipeCategory.REDSTONE, result, 8).input(Ingredient.fromTag(ObjectHolder.WIRES_TAG_KEY), 8)
@@ -56,8 +55,7 @@ public class RecipeGenerator extends FabricRecipeProvider {
         }
     }
 
-    private void makeDyeingInfiniwireRecipe(Consumer<RecipeJsonProvider> iFinishedRecipeConsumer, Item result,
-                                            Item dye)
+    private void makeDyeingInfiniwireRecipe(Consumer<RecipeJsonProvider> iFinishedRecipeConsumer, Item result, Item dye)
     {
         Identifier resultLoc = Registries.ITEM.getId(result);
         ShapelessRecipeJsonBuilder.create(RecipeCategory.REDSTONE, result, 8)
@@ -67,8 +65,7 @@ public class RecipeGenerator extends FabricRecipeProvider {
                 .offerTo(iFinishedRecipeConsumer, new Identifier(DYEING_ID + "/" + resultLoc.getPath()));
     }
 
-    private void makeDyedInfiniwireRecipe(Consumer<RecipeJsonProvider> iFinishedRecipeConsumer, Item result,
-                                          Item ingredient)
+    private void makeDyedInfiniwireRecipe(Consumer<RecipeJsonProvider> iFinishedRecipeConsumer, Item result, Item ingredient)
     {
         ShapelessRecipeJsonBuilder.create(RecipeCategory.REDSTONE, result, 8).input(ingredient, 8)
                 .input(Items.IRON_INGOT).criterion("has_wire", FabricRecipeProvider.conditionsFromItem(ingredient))

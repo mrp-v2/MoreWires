@@ -15,7 +15,9 @@ public class TranslationGenerator extends FabricLanguageProvider {
     @Override
     public void generateTranslations(TranslationBuilder translationBuilder) {
         for(String color : WIRE_BLOCKS.keySet()){
-            addWireTranslation(WIRE_BLOCKS.get(color),translationBuilder);
+            if(!color.equals("red")){
+                addWireTranslation(WIRE_BLOCKS.get(color),translationBuilder);
+            }
             addWireTranslation(INFINIWIRE_BLOCKS.get(color),translationBuilder);
         }
     }
