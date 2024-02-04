@@ -1,28 +1,22 @@
 package com.morewires.util;
 
-import com.morewires.MoreWires;
+import com.morewires.block.AdjustedRedstoneWireBlock;
+import com.morewires.block.InfiniwireBlock;
 import com.morewires.item.AdjustedRedstoneItem;
 import com.morewires.item.InfiniwireItem;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import com.morewires.block.*;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagBuilder;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.tuple.Pair;
-import static com.morewires.MoreWires.MODID;
 
 import java.util.HashMap;
+
+import static com.morewires.MoreWires.MODID;
 
 public class ObjectHolder {
     public static final HashMap<String, AdjustedRedstoneWireBlock> WIRE_BLOCKS;
